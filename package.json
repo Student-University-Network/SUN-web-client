@@ -1,9 +1,8 @@
 {
-	"name": "nextjs-starter-template",
+	"name": "sun-web-client",
 	"version": "0.1.0",
 	"private": true,
 	"author": "",
-	"license": "MIT",
 	"keywords": [],
 	"scripts": {
 		"dev": "next dev",
@@ -17,10 +16,11 @@
 		"*": "prettier --ignore-unknown --write"
 	},
 	"dependencies": {
+		"@next/font": "^13.1.1",
 		"next": "13.1.1",
+		"next-themes": "^0.2.1",
 		"react": "18.2.0",
-		"react-dom": "18.2.0",
-		"@next/font": "^13.1.1"
+		"react-dom": "18.2.0"
 	},
 	"devDependencies": {
 		"@types/node": "18.11.18",
