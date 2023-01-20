@@ -3,10 +3,10 @@
 @tailwind utilities;
 
 @layer base {
-	button {
+	/* button {
 		@apply transition-colors duration-300
-        font-semibold px-4 rounded-full shadow-md;
-	}
+        font-semibold px-4 rounded-2xl shadow-md;
+	} */
 }
 @layer components {
 	/*
@@ -14,14 +14,18 @@
     bg-colors
     shape and borders
     */
+	.btn {
+		@apply transition-all duration-300 
+        font-semibold rounded-xl shadow-md outline-none;
+	}
 	.elevated {
-		@apply text-purple-500 dark:text-purple-300
-         dark:bg-gray-800 
+		@apply text-purple-800 dark:text-purple-300
+        bg-transparent
         border-none  shadow-gray-500;
 	}
-	.elevated:hover {
+	/* .elevated:hover {
 		@apply bg-purple-100 dark:bg-purple-50;
-	}
+	} */
 	.filled {
 		@apply text-white dark:text-purple-800
         bg-purple-600 dark:bg-purple-200

@@ -17,7 +17,7 @@ interface ButtonProps {
 const Button: FC<ButtonProps> = ({ className, onClick, btnType, children }) => (
     <button
         type='button'
-        className={`p-4 px-8 ${className} ${btnType}`}
+        className={`p-4 px-4 ${className} ${btnType}`}
         onClick={onClick}
     >{children}</button>
 )
