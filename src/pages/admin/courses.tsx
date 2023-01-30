@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
-/* eslint-disable react/self-closing-comp */
 import Sidebar from "src/partials/Sidebar";
 import Navbar from "src/partials/Navbar";
 import Head from "next/head";

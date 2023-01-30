@@ -9,7 +9,7 @@ export default function Sidebar() {
 
     return (
         <div className="fixed left-0 z-10 flex flex-col h-full mt-16 overflow-hidden text-gray-900 transition-all duration-300 bg-white border-none shadow-md w-14 top-4 hover:w-64 md:w-64 dark:bg-gray-900">
-            <div className="flex flex-col justify-between flex-grow overflow-x-hidden overflow-y-auto">
+            <div className="flex flex-col flex-grow overflow-x-hidden overflow-y-auto">
                 <ul className="flex flex-col py-4 space-y-1">
                     <li>
                         <Link className={`relative flex flex-row items-center pr-6 border-l-4 border-transparent h-11 focus:outline-none font-bold text-gray-500 dark:text-gray-400 hover:text-black hover:dark:text-white transition-colors duration-300 ${router.pathname === "/admin/dashboard" ? "border-primary-800 dark:border-primary-600 text-black dark:text-primary-100" : ""}`} href="/admin/dashboard" >
@@ -70,7 +70,23 @@ export default function Sidebar() {
                         </Link>
                     </li>
                 </ul>
-                <p className="hidden px-5 py-3 mb-24 text-xs text-center text-primary-800 dark:text-primary-200 md:block">Copyright @2023</p>
+                <ul className='flex flex-col py-4 space-y-1'>
+                    <li>
+                        <p className='mx-8 mb-4 font-normal text-gray-700 dark:text-gray-400'>Settings</p>
+                    </li>
+                    <li>
+                        <Link className={`relative flex flex-row items-center pr-6 border-l-4 border-transparent h-11 focus:outline-none font-bold text-gray-500 dark:text-gray-400 hover:text-black hover:dark:text-white transition-colors duration-300 ${router.pathname === "/admin/profile" ? "border-primary-800 dark:border-primary-600 text-black dark:text-primary-100" : ""}`} href="/admin/profile" >
+                            <span className="inline-flex items-center justify-center ml-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                                </svg>
+
+                            </span>
+                            <span className="ml-2 text-sm tracking-wide truncate">Profile</span>
+                        </Link>
+                    </li>
+                </ul>
+                <p className="hidden px-5 py-3 mt-auto mb-24 text-xs text-center text-primary-800 dark:text-primary-200 md:block">Copyright @2023</p>
             </div>
         </div>
     )

@@ -4,7 +4,6 @@
 /* eslint-disable react/prop-types */
 
 import { FC } from "react"
-// import styles from "../styles/Components.module.css"
 
 interface ButtonProps {
     // type:string;

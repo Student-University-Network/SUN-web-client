@@ -1,7 +1,7 @@
+@import './Components.module.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 @layer base {
 	/* button {
 		@apply transition-colors duration-300
@@ -19,7 +19,7 @@
         font-semibold rounded-xl shadow-md outline-none;
 	}
 	.elevated {
-		@apply text-purple-800 dark:text-purple-300
+		@apply text-primary-800 dark:text-primary-300
         bg-transparent
         border-none  shadow-gray-500;
 	}
