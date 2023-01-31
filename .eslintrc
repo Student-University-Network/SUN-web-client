@@ -25,8 +25,25 @@
 	"plugins": ["react", "@typescript-eslint"],
 	// override rules here
 	"rules": {
+		"react/jsx-props-no-spreading": "off",
 		"@typescript-eslint/no-explicit-any": "off",
-		"react/react-in-jsx-scope": "off"
+		"react/react-in-jsx-scope": "off",
+		"jsx-a11y/label-has-associated-control": [
+			"error",
+			{
+				"required": {
+					"some": ["nesting", "id"]
+				}
+			}
+		],
+		"jsx-a11y/label-has-for": [
+			"error",
+			{
+				"required": {
+					"some": ["nesting", "id"]
+				}
+			}
+		]
 	},
 	"settings": {
 		"react": {

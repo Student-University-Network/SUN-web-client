@@ -32,7 +32,7 @@ export default function Profile() {
                         </div>
 
                         <div className="mt-6 mb-4 ml-auto mr-5">
-                            <Button className="flex p-2 space-x-2 text-base font-bold " onClick={() => { }} btnType='elevated'>
+                            <Button className="flex p-2 space-x-2 text-base font-bold " onClick={() => { }}>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
                                 </svg>
@@ -44,7 +44,7 @@ export default function Profile() {
                         <div className="overflow-hidden shadow sm:rounded-md">
                             <div className="px-4 py-5 sm:p-6">
                                 <div className="grid grid-cols-6 gap-6">
-                                    <InputField name="firstname" className="col-span-6 lg:col-span-2" label="First Name" type="text" />
+                                    <InputField name="firstname" className="col-span-6 lg:col-span-2" label="First Name" type="text" value="Manas" />
                                     <InputField name="middlename" className="col-span-6 lg:col-span-2" label="Middle Name" type="text" />
                                     <InputField name="lastname" className="col-span-6 lg:col-span-2" label="Last Name" type="text" />
                                     <InputField name="email" className="col-span-6 sm:col-span-4" label="Email Address" type="text" />

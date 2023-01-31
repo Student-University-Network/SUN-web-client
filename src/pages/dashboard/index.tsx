@@ -1,9 +1,7 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
-/* eslint-disable react/self-closing-comp */
 import Sidebar from "src/partials/Sidebar";
 import Navbar from "src/partials/Navbar";
 import Head from "next/head";
-
+import Container from "src/partials/Container";
 
 export default function Dashboard() {
     return (
@@ -17,10 +15,7 @@ export default function Dashboard() {
             <Navbar />
             <Sidebar />
             <div className="flex flex-col flex-auto flex-shrink-0 min-h-screen transition-all duration-300">
-
-                <div className="h-full mt-24 mb-20 ml-14 md:ml-64">
-
-                    {/* <!-- Statistics Cards --> */}
+                <Container>
                     <div className="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 lg:grid-cols-4">
                         <div className="flex items-center justify-between p-3 font-medium text-white border-b-4 rounded-md shadow-lg bg-primary-500 border-primary-600 dark:bg-gray-800 dark:border-gray-600 group">
                             <div className="flex items-center justify-center transition-all duration-300 transform bg-white rounded-full w-14 h-14 group-hover:rotate-12">
@@ -541,7 +536,7 @@ export default function Dashboard() {
                             </form>
                         </div>
                     </div>
-                </div>
+                </Container>
             </div>
         </>
 
