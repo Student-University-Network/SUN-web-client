@@ -43,7 +43,8 @@
 					"some": ["nesting", "id"]
 				}
 			}
-		]
+		],
+		"@typescript-eslint/no-floating-promises": "off"
 	},
 	"settings": {
 		"react": {

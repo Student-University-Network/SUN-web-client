@@ -9,6 +9,9 @@ module.exports = {
 	theme: {
 		typography: (theme) => ({}),
 		extend: {
+			animation: {
+				'spin-slow': 'spin 3s ease-in-out infinite',
+			},
 			colors: {
 				transparent: 'transparent',
 				white: '#ffffff',
