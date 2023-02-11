@@ -14,10 +14,10 @@ export default function LoadingScreen() {
 	}
 	return (
 		// full sized div
-		<div className="h-screen w-screen bg-white dark:bg-slate-900 flex justify-center absolute z-[5000]">
-			<div className="flex justify-center items-center flex-col">
+		<div className="bg-white dark:bg-gray-900 flex justify-center absolute z-[5000] h-full w-full overflow-hidden">
+			<div className="flex flex-col items-center justify-center">
 				<div
-					className="spinner-border animate-spin-slow inline-block w-32 h-32  rounded-full"
+					className="inline-block w-32 h-32 rounded-full spinner-border animate-spin-slow"
 					role="status"
 				>
 					<svg
@@ -35,7 +35,7 @@ export default function LoadingScreen() {
 						/>
 					</svg>
 				</div>
-				<div className="text-xl my-4">Loading...</div>
+				<div className="my-4 text-xl">Loading...</div>
 			</div>
 		</div>
 	);

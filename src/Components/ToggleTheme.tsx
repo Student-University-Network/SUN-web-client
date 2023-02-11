@@ -6,7 +6,8 @@ export default function ToggleTheme() {
 
 	return (
 		<div className="flex items-center justify-between h-16 ">
-			<Button
+			<button
+				type="button"
 				className="p-0 text-primary-600"
 				onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
 			>
@@ -33,7 +34,7 @@ export default function ToggleTheme() {
 						<path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
 					</svg>
 				)}
-			</Button>
+			</button>
 		</div>
 	);
 }

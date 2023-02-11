@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { useForm } from 'react-hook-form';
-import Button from 'src/Components/Button';
 import React, { useState } from 'react';
 import Head from 'next/head';
 
 import { useAuth } from 'src/context/AuthContext';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 interface IFormInput {
 	username: string;
@@ -92,7 +92,7 @@ export default function Login() {
 										{...register('username', {
 											required: 'Username is required',
 										})}
-										placeholder="John"
+										placeholder="username"
 										className={`bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 `}
 									/>
 
@@ -158,29 +158,13 @@ export default function Login() {
 									)}
 								</div>
 								<div className="flex items-center justify-between">
-									<div className="flex items-start">
-										{/* <div className="flex items-center h-5">
-											<input
-												{...register('checkbox')}
-												type="checkbox"
-												className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-700 dark:ring-offset-gray-800"
-											/>
-										</div> */}
-										{/* <div className="ml-3 text-sm">
-											<label
-												htmlFor="remember"
-												className="text-gray-500 dark:text-gray-300"
-											>
-												Remember me
-											</label>
-										</div> */}
-									</div>
-									<Button
-										className="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500"
-										onClick={() => {}}
+									{/* TODO: add forget password url */}
+									<Link
+										href="/"
+										className="text-sm text-primary-700 hover:bg-primary-100 rounded-lg p-2 "
 									>
 										Forgot password?
-									</Button>
+									</Link>
 								</div>
 								<button
 									type="submit"

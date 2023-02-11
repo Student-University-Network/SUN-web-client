@@ -2,7 +2,7 @@
 module.exports = {
 	content: [
 		'./src/pages/**/*.{js,ts,tsx,tsx}',
-		'./src/components/**/*.{js,ts,jsx,tsx}',
+		'./src/Components/**/*.{js,ts,jsx,tsx}',
 		'./src/partials/**/*.{js,ts,jsx,tsx}',
 	],
 

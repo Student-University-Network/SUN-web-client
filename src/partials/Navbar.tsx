@@ -1,7 +1,10 @@
-import React, { Fragment } from 'react';
+/* eslint-disable jsx-a11y/interactive-supports-focus */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+import React, { Fragment, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import ToggleTheme from 'src/Components/ToggleTheme';
 import { useAuth } from 'src/context/AuthContext';
+import { useGlobalContext } from 'src/context/store';
 
 function classNames(...classes: string[]) {
 	return classes.filter(Boolean).join(' ');
@@ -19,7 +22,7 @@ function Navbar() {
 					viewBox="0 0 24 24"
 					strokeWidth={2}
 					stroke="currentColor"
-					className="w-6 h-6 text-yellow-500 dark:text-orange-500"
+					className="w-6 h-6 mt-1 mr-2 text-yellow-500 dark:text-orange-500 "
 				>
 					<path
 						strokeLinecap="round"
@@ -27,7 +30,7 @@ function Navbar() {
 						d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"
 					/>
 				</svg>
-				<h1 className="ml-2 text-2xl font-bold text-gray-900 dark:text-primary-300">
+				<h1 className="mt-1 ml-2 text-2xl font-bold text-gray-900 dark:text-primary-300">
 					SUN
 				</h1>
 			</div>
@@ -49,7 +52,7 @@ function Navbar() {
 									viewBox="0 0 24 24"
 									strokeWidth={1.5}
 									stroke="currentColor"
-									className="w-8 h-8"
+									className="w-8 h-8 "
 								>
 									<path
 										strokeLinecap="round"
@@ -57,6 +60,7 @@ function Navbar() {
 										d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
 									/>
 								</svg>
+
 								<span className="bottom-1 left-7 absolute  w-3.5 h-3.5 bg-green-400 border-2 border-white dark:border-gray-800 rounded-full" />
 							</Menu.Button>
 						</div>
@@ -75,7 +79,7 @@ function Navbar() {
 									<Menu.Item>
 										{({ active }) => (
 											<a
-												href="/nonePage"
+												href="/profile"
 												className={classNames(
 													active
 														? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
@@ -83,7 +87,7 @@ function Navbar() {
 													'block px-4 py-2 ',
 												)}
 											>
-												Settings
+												Profile
 											</a>
 										)}
 									</Menu.Item>

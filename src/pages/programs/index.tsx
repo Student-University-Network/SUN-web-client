@@ -1,7 +1,13 @@
+/* eslint-disable jsx-a11y/interactive-supports-focus */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import Sidebar from 'src/partials/Sidebar';
 import Navbar from 'src/partials/Navbar';
 import Head from 'next/head';
 import Container from 'src/partials/Container';
+import PageMetric from 'src/Components/PageMetric';
+import InputField from 'src/Components/InputField';
+import Button from 'src/Components/Button';
+import Link from 'next/link';
 
 export default function Programs() {
 	return (
@@ -21,8 +27,230 @@ export default function Programs() {
 			<Navbar />
 			<Sidebar />
 			<Container>
-				<div className="w-full text-cool-gray-500 text-3xl flex justify-center items-center">
-					Programs Page
+				<div className="grid grid-cols-1 gap-2 px-2 sm:grid-cols-2 lg:grid-cols-3">
+					<PageMetric
+						label="Active"
+						value={10}
+						logo={
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="30"
+								height="30"
+								fill="none"
+								viewBox="0 0 24 24"
+								strokeWidth={2}
+								stroke="currentColor"
+								className="transition-transform duration-500 ease-in-out transform stroke-current text-primary-800 dark:text-gray-800"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"
+								/>
+							</svg>
+						}
+					/>
+					<PageMetric
+						label="Total"
+						value={100}
+						logo={
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								width="30"
+								height="30"
+								strokeWidth={2}
+								stroke="currentColor"
+								className="transition-transform duration-500 ease-in-out transform stroke-current text-primary-800 dark:text-gray-800"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5"
+								/>
+							</svg>
+						}
+					/>
+					<Link
+						className="flex items-center justify-between p-3 font-medium border-2 rounded-md shadow-lg text-primary-800 dark:text-white dark:bg-gray-800 dark:border-gray-600 group hover:bg-primary-200 hover:dark:bg-primary-800 lg:-order-1"
+						href="/programs/new"
+					>
+						<p className="pl-2 text-xl">New Program</p>
+						<div className="flex items-center justify-center transition-all duration-300 transform bg-white rounded-full w-14 h-14 group-hover:rotate-12">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								width="30"
+								height="30"
+								strokeWidth={2}
+								stroke="currentColor"
+								className="transition-transform duration-500 ease-in-out transform stroke-current text-primary-800 dark:text-gray-800"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+								/>
+							</svg>
+						</div>
+					</Link>
+				</div>
+				{/* Table for programs list */}
+				<div className="flex flex-col gap-4 p-3 mx-3 mt-4 border-b md:flex-row lg:flex-row dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
+					<InputField
+						className=""
+						label="Filter by Name"
+						placeholder="Program Name"
+					/>
+					<div>
+						<label
+							htmlFor="programTags"
+							className="block text-base font-medium text-primary-800 dark:text-primary-500"
+						>
+							Filter by Tag
+						</label>
+						<select id="programTags" className="input-field">
+							<option selected>Choose a Tag</option>
+							<option value="CS">CS</option>
+							<option value="IT">IT</option>
+							<option value="EXTC">EXTC</option>
+						</select>
+					</div>
+					<div className="flex flex-col justify-end">
+						<Button
+							onClick={() => {
+								console.log('Search');
+							}}
+							label="Search"
+							trailingIcon={
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+									strokeWidth={1.5}
+									stroke="currentColor"
+									className="inline-flex w-6 h-6"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+									/>
+								</svg>
+							}
+						/>
+					</div>
+				</div>
+				<div className="w-full px-3 overflow-x-auto rounded-sm">
+					<table className="w-full">
+						<thead>
+							<tr className="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
+								<th className="px-4 py-3">Program name</th>
+								<th className="px-4 py-3">Year</th>
+								<th className="px-4 py-3">Duration</th>
+								<th className="px-4 py-3">Tag</th>
+							</tr>
+						</thead>
+						<tbody className="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
+							<tr className="text-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-gray-400">
+								<td className="p-4">
+									<div className="flex items-center text-sm">
+										<div>
+											<p className="font-semibold">
+												BE_INFT- Rev-2019
+											</p>
+										</div>
+									</div>
+								</td>
+								<td className="p-4 text-sm">2019-23</td>
+								<td className="p-4 text-sm">4 years</td>
+								<td className="p-4 text-xs">
+									<span className="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">
+										{' '}
+										INFT{' '}
+									</span>
+								</td>
+							</tr>
+							<tr className="text-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-gray-400">
+								<td className="p-4">
+									<div className="flex items-center text-sm">
+										<div>
+											<p className="font-semibold">
+												FE_CMPN- (C - Scheme)
+											</p>
+										</div>
+									</div>
+								</td>
+								<td className="p-4 text-sm">2021-25</td>
+								<td className="p-4 text-sm">4 years</td>
+								<td className="p-4 text-xs">
+									<span className="px-2 py-1 font-semibold leading-tight text-yellow-700 bg-yellow-100 rounded-full">
+										{' '}
+										CMPN{' '}
+									</span>
+								</td>
+							</tr>
+							<tr className="text-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-gray-400">
+								<td className="px-4 py-4">
+									<div className="flex items-center text-sm">
+										<div>
+											<p className="font-semibold">
+												TE_EXTC- (C - Scheme)
+											</p>
+										</div>
+									</div>
+								</td>
+								<td className="px-4 py-4 text-sm">2020-24</td>
+								<td className="px-4 py-4 text-sm">4 years</td>
+								<td className="px-4 py-4 text-xs">
+									<span className="px-2 py-1 font-semibold leading-tight text-gray-700 bg-gray-100 rounded-full dark:text-gray-100 dark:bg-gray-700">
+										{' '}
+										EXTC{' '}
+									</span>
+								</td>
+							</tr>
+							<tr className="text-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-gray-400">
+								<td className="px-4 py-4">
+									<div className="flex items-center text-sm">
+										<div>
+											<p className="font-semibold">
+												SE_INFT- (C - Scheme)
+											</p>
+										</div>
+									</div>
+								</td>
+								<td className="px-4 py-4 text-sm">2020-24</td>
+								<td className="px-4 py-4 text-sm">4 years</td>
+								<td className="px-4 py-4 text-xs">
+									<span className="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">
+										{' '}
+										INFT{' '}
+									</span>
+								</td>
+							</tr>
+							<tr className="text-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-gray-400">
+								<td className="px-4 py-3">
+									<div className="flex items-center text-sm">
+										<div>
+											<p className="font-semibold">
+												BE_ELEC- (C - Scheme)
+											</p>
+										</div>
+									</div>
+								</td>
+								<td className="px-4 py-3 text-sm">2019-23</td>
+								<td className="px-4 py-3 text-sm">4 years</td>
+								<td className="px-4 py-3 text-xs">
+									<span className="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-700">
+										{' '}
+										ELEC{' '}
+									</span>
+								</td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
 			</Container>
 		</>

@@ -6,7 +6,7 @@ interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 function InputField({ ...props }: InputFieldProps) {
-	const { className, type, name, label, placeholder } = props;
+	const { className, type, name, label, placeholder, onChange } = props;
 	return (
 		<div className={className}>
 			<label
@@ -20,10 +20,8 @@ function InputField({ ...props }: InputFieldProps) {
 				name={name}
 				id={name}
 				placeholder={placeholder}
-				className=" w-full p-3 mt-2 font-semibold text-gray-800
-            bg-white border border-gray-400 rounded-lg dark:bg-gray-800
-             dark:border-gray-700 dark:text-gray-50 focus:border-primary-800
-              dark:focus:border-primary-500 focus:outline-none"
+				className="input-field"
+				onChange={onChange}
 			/>
 		</div>
 	);
