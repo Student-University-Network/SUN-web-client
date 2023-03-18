@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unused-prop-types */
+/* eslint-disable import/prefer-default-export */
 /* eslint-disable react/require-default-props */
 import { ButtonHTMLAttributes } from 'react';
 
@@ -5,10 +7,10 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 	onClick: () => void;
 	leadingIcon?: React.ReactNode;
 	trailingIcon?: React.ReactNode;
-	label: string;
+	label?: string;
 }
 
-export default function Button({
+function Button({
 	className = '',
 	onClick,
 	label,
@@ -16,14 +18,22 @@ export default function Button({
 	trailingIcon,
 }: ButtonProps) {
 	return (
-		<button
-			type="button"
-			className={`btn hover:bg-primary-600 active:bg-primary-700 active:ring active:ring-primary-300  ${className}`}
-			onClick={onClick}
-		>
+		<button type="button" className={`btn${className}`} onClick={onClick}>
 			<div>{leadingIcon}</div>
-			<div className="flex-1">{label}</div>
+			<div>{label}</div>
 			<div>{trailingIcon}</div>
 		</button>
 	);
 }
+function IconButton({ className = '', onClick, leadingIcon }: ButtonProps) {
+	return (
+		<button
+			type="button"
+			className={`btn inline-flex mx-1 w-fit${className}`}
+			onClick={onClick}
+		>
+			<div>{leadingIcon}</div>
+		</button>
+	);
+}
+export { Button, IconButton };

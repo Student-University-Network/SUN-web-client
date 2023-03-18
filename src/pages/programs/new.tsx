@@ -1,3 +1,5 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
@@ -9,30 +11,96 @@ import Head from 'next/head';
 import Container from 'src/partials/Container';
 import InputField from 'src/Components/InputField';
 import { useEffect, useState } from 'react';
-import Button from 'src/Components/Button';
+import { Button, IconButton } from 'src/Components/Button';
 import { v4 as uuidv4 } from 'uuid';
+import { PlusCircleIcon, MinusCircleIcon } from '@heroicons/react/24/outline';
 
-type InputValues = {
-	programName: string;
-	year: string;
-	duration: string;
-	tag: string;
-	semesters: [
-		{
-			id: string;
-			semesterName: string;
-			courses: [
-				{
-					id: string;
-					courseName: string;
-					optional: boolean;
-				},
-			];
-		},
-	];
-};
+// type InputValues = {
+// 	programName: string;
+// 	year: string;
+// 	duration: string;
+// 	tag: string;
+// 	semesters: [
+// 		{
+// 			id: string;
+// 			semesterName: string;
+// 			courses: [
+// 				{
+// 					id: string;
+// 					courseName: string;
+// 					optional: boolean;
+// 				},
+// 			];
+// 		},
+// 	];
+// };
+
+type SemesterValues = [
+	{
+		id: string;
+		semesterName: string;
+		courses: [
+			{ id: string; courseName: string; optional: boolean },
+			{ id: string; courseName: string; optional: boolean },
+			{ id: string; courseName: string; optional: boolean },
+		];
+	},
+];
 
 export default function NewProgram() {
+	const [semesters, setSemesters] = useState([
+		{
+			id: uuidv4(),
+			semesterName: '',
+			courses: [
+				{
+					id: uuidv4(),
+					courseName: '',
+					optional: false,
+				},
+				{
+					id: uuidv4(),
+					courseName: '',
+					optional: false,
+				},
+				{
+					id: uuidv4(),
+					courseName: '',
+					optional: false,
+				},
+			],
+		},
+	]);
+	const addNewSemester = () => {
+		const _semester = [...semesters];
+		_semester.push({
+			id: uuidv4(),
+			semesterName: '',
+			courses: [
+				{
+					id: uuidv4(),
+					courseName: '',
+					optional: false,
+				},
+				{
+					id: uuidv4(),
+					courseName: '',
+					optional: false,
+				},
+				{
+					id: uuidv4(),
+					courseName: '',
+					optional: false,
+				},
+			],
+		});
+		setSemesters(_semester);
+	};
+	const removeNewSemester = (id: string) => {
+		let _semester = [...semesters];
+		_semester = _semester.filter((semester) => semester.id !== id);
+		setSemesters(_semester);
+	};
 	return (
 		<>
 			<Head>
@@ -98,59 +166,67 @@ export default function NewProgram() {
 									type="text"
 								/>
 							</div>
-							{/* <Button
-								className="mt-3"
-								onClick={handleSubmit}
-								label="Submit"
-							/> */}
 						</div>
-
-						<p className="inline-flex items-center text-base font-medium text-primary-800 dark:text-primary-500">
-							Semesters
-						</p>
 
 						<div className="px-4 py-5 sm:p-6">
-							<div className="grid grid-cols-6 gap-6">
-								<InputField
-									name="semesterName"
-									className="col-span-6 lg:col-span-6"
-									label="Semester Name"
-									type="text"
-								/>
+							<p className="inline-flex mb-6 items-center text-base font-medium text-primary-800 dark:text-primary-500">
+								Semesters
+							</p>
 
-								<InputField
-									name="courseName"
-									className="col-span-6 lg:col-span-2"
-									label="Course Name"
-									type="text"
-								/>
-							</div>
+							{semesters.map((semester) => (
+								<>
+									<div className="grid grid-cols-6 gap-6 mb-4">
+										<InputField
+											key={semester.id}
+											name="semesterName"
+											className="col-span-6 lg:col-span-6"
+											label="Semester Name"
+											type="text"
+										/>
+										{semester.courses.map((course) => (
+											<InputField
+												key={course.id}
+												name="courseName"
+												className="col-span-2"
+												label="Course Name"
+												type="text"
+											/>
+										))}
+										<div className="flex flex-row space-x-3 col-span-4">
+											<Button
+												onClick={() => addNewSemester()}
+												leadingIcon={
+													<PlusCircleIcon
+														className="w-5 h-5"
+														strokeWidth={2}
+													/>
+												}
+												label="Add Semester"
+											/>
+											{semesters.length > 1 && (
+												<Button
+													onClick={() =>
+														removeNewSemester(
+															semester.id,
+														)
+													}
+													leadingIcon={
+														<MinusCircleIcon
+															className="w-5 h-5"
+															strokeWidth={2}
+														/>
+													}
+													label="Remove Semester"
+												/>
+											)}
+										</div>
+									</div>
+									<hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
+								</>
+							))}
 						</div>
-
-						<Button
-							// onClick={addSemester}
-							label="Add New Semester"
-							trailingIcon={
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 24 24"
-									width="20"
-									height="20"
-									strokeWidth={2}
-									stroke="currentColor"
-									className="mr-2"
-								>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-									/>
-								</svg>
-							}
-							onClick={() => console.log('Add new Semester')}
-						/>
 					</form>
+					<pre>{JSON.stringify(semesters, null, 4)}</pre>
 				</section>
 			</Container>
 		</>

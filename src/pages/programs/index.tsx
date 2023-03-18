@@ -6,7 +6,7 @@ import Head from 'next/head';
 import Container from 'src/partials/Container';
 import PageMetric from 'src/Components/PageMetric';
 import InputField from 'src/Components/InputField';
-import Button from 'src/Components/Button';
+import { Button } from 'src/Components/Button';
 import Link from 'next/link';
 
 export default function Programs() {
