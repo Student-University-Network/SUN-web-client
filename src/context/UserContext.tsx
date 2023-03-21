@@ -1,5 +1,6 @@
+import { AxiosError } from 'axios';
 import { createContext, useContext, useEffect, useState } from 'react';
-import userService from 'src/api/userService';
+import userService, { ChangePasswordInput } from 'src/api/userService';
 import { useAuth } from './AuthContext';
 
 type UserContextType = {
@@ -7,13 +8,20 @@ type UserContextType = {
 	gender: string;
 	fullName: { firstName: string; middleName: string; lastName: string };
 	dateOfBirth: Date | null;
-	getUserDetails: (done: () => void, error: () => void) => void;
+	getUserDetails: (
+		done: (data: any) => void,
+		error: (data: any) => void,
+	) => void;
 	updateUserProfile: (
 		newProfileData: any,
-		done: () => void,
-		error: () => void,
+		done: (data: any) => void,
+		error: (data: any) => void,
 	) => void;
-	changeUserPassword: () => void;
+	changeUserPassword: (
+		payload: ChangePasswordInput,
+		done: (data: any) => void,
+		error: (data: any) => void,
+	) => void;
 };
 
 const UserContext = createContext<UserContextType>({
@@ -42,7 +50,10 @@ export function UserProvider({ children }: Props) {
 
 	const { user } = useAuth();
 
-	const getUserDetails = (done = () => {}, error = () => {}) => {
+	const getUserDetails = (
+		done = (data: any) => {},
+		error = (data: any) => {},
+	) => {
 		userService
 			.userDetails()
 			.then((res) => {
@@ -57,17 +68,17 @@ export function UserProvider({ children }: Props) {
 				setDateOfBirth(
 					data.dateOfBirth ? new Date(data.dateOfBirth) : null,
 				);
-				done();
+				done(null);
 			})
 			.catch((err) => {
-				error();
+				error(null);
 			});
 	};
 
 	const updateUserProfile = (
 		newProfileData: any,
-		done = () => {},
-		error = () => {},
+		done: (data: any) => void,
+		error: (data: any) => void,
 	) => {
 		userService
 			.updateUserDetails(newProfileData)
@@ -83,14 +94,24 @@ export function UserProvider({ children }: Props) {
 				setDateOfBirth(
 					data.dateOfBirth ? new Date(data.dateOfBirth) : null,
 				);
-				done();
+				done(null);
 			})
 			.catch((err) => {
-				error();
+				error(null);
 			});
 	};
 
-	const changeUserPassword = () => {};
+	const changeUserPassword = (
+		payload: ChangePasswordInput,
+		done: (data: any) => void,
+		error: (data: any) => void,
+	) => {
+		userService
+			.changePassword(payload)
+			.then((res) => done(null))
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+			.catch((err) => error(err?.response?.data));
+	};
 
 	useEffect(() => {
 		if (user) {

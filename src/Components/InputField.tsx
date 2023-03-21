@@ -1,4 +1,4 @@
-import { InputHTMLAttributes } from 'react';
+import { InputHTMLAttributes, MutableRefObject } from 'react';
 
 interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
 	className: string;
@@ -16,6 +16,7 @@ function InputField({ ...props }: InputFieldProps) {
 		readOnly,
 		onFocus,
 		value,
+		...rest
 	} = props;
 	return (
 		<div className={className}>
@@ -35,6 +36,7 @@ function InputField({ ...props }: InputFieldProps) {
 				onChange={onChange}
 				readOnly={readOnly}
 				onFocus={onFocus}
+				{...rest}
 			/>
 		</div>
 	);

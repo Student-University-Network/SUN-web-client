@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import {
 	InformationCircleIcon,
@@ -70,7 +69,7 @@ export function Alert({ children }: Props) {
 
 	return (
 		<>
-			<div className="fixed items-stretch sm:w-[50vh] left-1 bottom-4 flex flex-col justify-end space-y-2 my-2 sm:my-4 mx-2 z-[2000] transition">
+			<div className="fixed items-stretch sm:w-[50vh] left-1 bottom-4 flex flex-col justify-end space-y-2 my-2 sm:my-4 mx-2 z-[5000] transition">
 				{alertList.map((item, _index) => (
 					<div
 						key={item.type + _index.toString()}

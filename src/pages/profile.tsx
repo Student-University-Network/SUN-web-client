@@ -12,12 +12,15 @@ import {
 } from '@heroicons/react/24/outline';
 import { useUser } from 'src/context/UserContext';
 import { ERROR, INFO, useAlert } from 'src/Components/Alert';
+import ChangePassword from 'src/Components/ChangePassword';
 
 export default function Profile() {
 	const profile = useUser();
 	const { showAlert } = useAlert();
 
 	const [isEditMode, setIsEditMode] = useState(false);
+	const [showChangePassword, setShowChangePassword] = useState(false);
+
 	const [fullName, setFullName] = useState({
 		firstName: 'eafef',
 		middleName: '',
@@ -110,12 +113,17 @@ export default function Profile() {
 									{profile.fullName.lastName}
 								</h1>
 								<div className="text-sm text-center text-gray-500 dark:text-gray-400">
-									Joined in August 2014
+									{/* TODO (Profile UI) : Use program data here */}
+									BE C-Scheme 2019 | BEIT2 - Roll no 36
 								</div>
 							</div>
 						</div>
-
-						<div className="mt-6 mb-4 ml-auto mr-5">
+					</div>
+					<form className="flex flex-col justify-center px-4 my-3 overflow-hidden">
+						<div className="mt-6 mb-4 mx-5 flex flex-col sm:flex-row justify-between items-start space-y-2 sm:items-center">
+							<div className="text-xl md:text-2xl font-semibold">
+								Personal details
+							</div>
 							{!isEditMode ? (
 								<Button
 									label="Edit"
@@ -128,9 +136,8 @@ export default function Profile() {
 								/>
 							) : null}
 						</div>
-					</div>
-					<form className="flex flex-col justify-center px-4 overflow-hidden">
-						<div className="overflow-hidden shadow sm:rounded-md">
+						<hr className="border-1 border-slate-500 mx-5" />
+						<div className="overflow-hidden shadow sm:rounded-lg">
 							<div className="px-4 py-5 sm:p-6">
 								<div className="grid grid-cols-6 gap-6">
 									<InputField
@@ -257,7 +264,40 @@ export default function Profile() {
 							</div>
 						</div>
 					</form>
+					<form className="flex flex-col justify-center px-4 overflow-hidden">
+						<div className="mt-6 mb-4 mx-5 flex flex-col sm:flex-row justify-between items-start space-y-2 sm:items-center">
+							<div className="text-xl md:text-2xl font-semibold">
+								Account details
+							</div>
+						</div>
+						<hr className="border-1 border-slate-500 mx-5" />
+						<div className="overflow-hidden shadow grid grid-cols-6 gap-6 sm:rounded-lg px-4 py-5 sm:p-6">
+							<InputField
+								className="col-span-6 sm:col-span-2"
+								name="password"
+								type="password"
+								readOnly
+								label="Password"
+								value="ADummyPassword"
+								disabled
+							/>
+							<div className="col-span-6 sm:col-span-2 flex items-end">
+								<Button
+									label="Change password"
+									leadingIcon={
+										<PencilIcon className="w-5 h-5" />
+									}
+									onClick={() => setShowChangePassword(true)}
+								/>
+							</div>
+						</div>
+					</form>
 				</div>
+				{showChangePassword ? (
+					<ChangePassword
+						closePrompt={() => setShowChangePassword(false)}
+					/>
+				) : null}
 			</Container>
 		</>
 	);

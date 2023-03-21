@@ -21,19 +21,29 @@ export interface UserDetailsUpdateInput {
 	dateOfBirth: Date | null;
 }
 
+export interface ChangePasswordInput {
+	currentPassword: string;
+	newPassword: string;
+	confirmPassword: string;
+}
+
+export interface ChangePasswordResponse {
+	code: string;
+	message: string;
+	[k: string]: any;
+}
+
 class UserService {
 	userDetails() {
 		return http.get<UserDetailsResponse>('/user/profile');
 	}
 
-	// TODO (UserService) : add PUT body
 	updateUserDetails(newUserDetails: any) {
 		return http.put<UserDetailsResponse>('/user/profile', newUserDetails);
 	}
 
-	// TODO (UserService) : add PUT body
-	changePassword() {
-		return http.put('/user/password');
+	changePassword(payload: ChangePasswordInput) {
+		return http.put<[ChangePasswordResponse]>('/user/password', payload);
 	}
 }
 

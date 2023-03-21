@@ -1,5 +1,4 @@
 /* eslint-disable jsx-a11y/interactive-supports-focus */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
 import Sidebar from 'src/partials/Sidebar';
 import Navbar from 'src/partials/Navbar';
 import Head from 'next/head';

@@ -41,7 +41,7 @@ api.interceptors.response.use(
 				})
 				.catch((error: AxiosError) => error);
 		}
-		return err;
+		return Promise.reject(err);
 	},
 );
 

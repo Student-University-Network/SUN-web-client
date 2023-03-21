@@ -1,5 +1,4 @@
 /* eslint-disable jsx-a11y/interactive-supports-focus */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { Fragment, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import ToggleTheme from 'src/Components/ToggleTheme';
