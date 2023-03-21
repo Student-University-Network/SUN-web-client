@@ -53,6 +53,7 @@ class AuthService {
 			(req) => {
 				if (token) {
 					req.headers['x-access-token'] = token;
+					req.headers.Authorization = `Bearer ${token}`;
 				}
 				return req;
 			},
@@ -67,6 +68,7 @@ class AuthService {
 			http.interceptors.request.eject(this.accessTokenInterceptor);
 			this.accessTokenInterceptor = null;
 		}
+		return http.post('/auth/logout');
 	}
 }
 

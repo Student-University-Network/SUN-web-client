@@ -6,7 +6,17 @@ interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 function InputField({ ...props }: InputFieldProps) {
-	const { className, type, name, label, placeholder, onChange } = props;
+	const {
+		className,
+		type,
+		name,
+		label,
+		placeholder,
+		onChange,
+		readOnly,
+		onFocus,
+		value,
+	} = props;
 	return (
 		<div className={className}>
 			<label
@@ -18,10 +28,13 @@ function InputField({ ...props }: InputFieldProps) {
 			<input
 				type={type}
 				name={name}
+				value={value}
 				id={name}
 				placeholder={placeholder}
 				className="input-field"
 				onChange={onChange}
+				readOnly={readOnly}
+				onFocus={onFocus}
 			/>
 		</div>
 	);

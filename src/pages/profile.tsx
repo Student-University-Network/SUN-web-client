@@ -1,12 +1,74 @@
 import Sidebar from 'src/partials/Sidebar';
 import Navbar from 'src/partials/Navbar';
 import Head from 'next/head';
-import Button from 'src/Components/Button';
+import { useEffect, useState } from 'react';
+import { Button } from 'src/Components/Button';
 import InputField from 'src/Components/InputField';
 import Container from 'src/partials/Container';
-import { PencilIcon } from '@heroicons/react/24/outline';
+import {
+	PencilIcon,
+	XCircleIcon,
+	ArrowPathIcon,
+} from '@heroicons/react/24/outline';
+import { useUser } from 'src/context/UserContext';
+import { ERROR, INFO, useAlert } from 'src/Components/Alert';
 
 export default function Profile() {
+	const profile = useUser();
+	const { showAlert } = useAlert();
+
+	const [isEditMode, setIsEditMode] = useState(false);
+	const [fullName, setFullName] = useState({
+		firstName: 'eafef',
+		middleName: '',
+		lastName: '',
+	});
+	const [gender, setGender] = useState('');
+	const [dateOfBirth, setDateOfBirth] = useState<string>('');
+
+	useEffect(() => {
+		setFullName({ ...profile.fullName });
+		setGender(profile.gender);
+		// Date workaround as HTML input field requires date in YYYY-MM-DD format
+		setDateOfBirth(
+			profile.dateOfBirth
+				? profile.dateOfBirth.toISOString().split('T')[0]
+				: '',
+		);
+	}, [profile]);
+
+	function onProfileUpdate() {
+		const newProfile: { [k: string]: any } = {
+			firstName: fullName.firstName,
+			middleName: fullName.middleName,
+			lastName: fullName.lastName,
+		};
+		if (gender) {
+			newProfile.gender = gender;
+		}
+		if (dateOfBirth) {
+			newProfile.dateOfBirth = new Date(dateOfBirth);
+		}
+		profile.updateUserProfile(
+			newProfile,
+			() => {
+				showAlert(INFO, 'Profiled updated successfully', true);
+				setIsEditMode(false);
+			},
+			() => {
+				showAlert(
+					ERROR,
+					'Oops something went wrong !! Please try again',
+					true,
+				);
+			},
+		);
+	}
+
+	function onProfileUpdateCancel() {
+		setIsEditMode(false);
+	}
+
 	return (
 		<>
 			<Head>
@@ -24,7 +86,7 @@ export default function Profile() {
 			<Navbar />
 			<Sidebar />
 			<Container>
-				<div className="h-full grid-flow-col mb-20">
+				<div className="h-full grid-flow-col mb-2">
 					<div className="flex flex-col items-center justify-center mt-4">
 						<div className="flex flex-col items-center justify-center">
 							<svg
@@ -44,7 +106,8 @@ export default function Profile() {
 
 							<div className="mt-3 font-medium">
 								<h1 className="text-2xl font-bold text-center">
-									Jese Leos
+									{profile.fullName.firstName}{' '}
+									{profile.fullName.lastName}
 								</h1>
 								<div className="text-sm text-center text-gray-500 dark:text-gray-400">
 									Joined in August 2014
@@ -53,11 +116,17 @@ export default function Profile() {
 						</div>
 
 						<div className="mt-6 mb-4 ml-auto mr-5">
-							<Button
-								label="Edit"
-								leadingIcon={<PencilIcon className="w-5 h-5" />}
-								onClick={() => {}}
-							/>
+							{!isEditMode ? (
+								<Button
+									label="Edit"
+									leadingIcon={
+										<PencilIcon className="w-5 h-5" />
+									}
+									onClick={() => {
+										setIsEditMode(true);
+									}}
+								/>
+							) : null}
 						</div>
 					</div>
 					<form className="flex flex-col justify-center px-4 overflow-hidden">
@@ -69,32 +138,121 @@ export default function Profile() {
 										className="col-span-6 lg:col-span-2"
 										label="First Name"
 										type="text"
-										value="Manas"
+										value={fullName.firstName}
+										readOnly={!isEditMode}
+										onChange={(e) => {
+											if (isEditMode) {
+												setFullName({
+													...fullName,
+													firstName: e.target.value,
+												});
+											}
+										}}
 									/>
 									<InputField
 										name="middlename"
 										className="col-span-6 lg:col-span-2"
 										label="Middle Name"
 										type="text"
+										value={fullName.middleName}
+										readOnly={!isEditMode}
+										onChange={(e) => {
+											if (isEditMode) {
+												setFullName({
+													...fullName,
+													middleName: e.target.value,
+												});
+											}
+										}}
 									/>
 									<InputField
 										name="lastname"
 										className="col-span-6 lg:col-span-2"
 										label="Last Name"
 										type="text"
+										value={fullName.lastName}
+										readOnly={!isEditMode}
+										onChange={(e) => {
+											if (isEditMode) {
+												setFullName({
+													...fullName,
+													lastName: e.target.value,
+												});
+											}
+										}}
 									/>
-									<InputField
-										name="email"
-										className="col-span-6 sm:col-span-4"
-										label="Email Address"
-										type="text"
-									/>
+									<div className="flex flex-row items-end space-x-5 col-span-6 sm:col-span-2">
+										<div className="flex flex-col w-full">
+											<label
+												htmlFor="gender"
+												className="block text-base font-medium text-primary-800 dark:text-primary-500 "
+											>
+												Gender
+											</label>
+											<select
+												className="input-field py-2.5"
+												name="gender"
+												value={gender}
+												onChange={(e) => {
+													if (isEditMode) {
+														setGender(
+															e.target.value,
+														);
+													}
+												}}
+											>
+												<option value="NONE">
+													None
+												</option>
+												<option value="MALE">
+													Male
+												</option>
+												<option value="FEMALE">
+													Female
+												</option>
+												<option value="OTHER">
+													Other
+												</option>
+											</select>
+										</div>
+									</div>
 									<InputField
 										name="dateofBirth"
-										className="col-span-6 sm:col-span-4"
+										className="col-span-6 sm:col-span-3"
 										label="Date of Birth"
 										type="date"
+										value={dateOfBirth}
+										readOnly={!isEditMode}
+										onChange={(e) => {
+											if (isEditMode) {
+												setDateOfBirth(e.target.value);
+											}
+										}}
 									/>
+									<div className="col-span-6 flex flex-row space-x-4 mt-6">
+										{isEditMode ? (
+											<>
+												<Button
+													label="Update"
+													leadingIcon={
+														<ArrowPathIcon className="w-5 h-5" />
+													}
+													onClick={() =>
+														onProfileUpdate()
+													}
+												/>
+												<Button
+													label="Cancel"
+													leadingIcon={
+														<XCircleIcon className="w-5 h-5" />
+													}
+													onClick={() =>
+														onProfileUpdateCancel()
+													}
+												/>
+											</>
+										) : null}
+									</div>
 								</div>
 							</div>
 						</div>

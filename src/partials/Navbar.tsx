@@ -5,6 +5,7 @@ import { Menu, Transition } from '@headlessui/react';
 import ToggleTheme from 'src/Components/ToggleTheme';
 import { useAuth } from 'src/context/AuthContext';
 import { useGlobalContext } from 'src/context/store';
+import Link from 'next/link';
 
 function classNames(...classes: string[]) {
 	return classes.filter(Boolean).join(' ');
@@ -78,7 +79,7 @@ function Navbar() {
 								<div className="py-1">
 									<Menu.Item>
 										{({ active }) => (
-											<a
+											<Link
 												href="/profile"
 												className={classNames(
 													active
@@ -88,7 +89,7 @@ function Navbar() {
 												)}
 											>
 												Profile
-											</a>
+											</Link>
 										)}
 									</Menu.Item>
 									<Menu.Item>

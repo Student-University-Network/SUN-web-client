@@ -79,14 +79,20 @@ export function AuthProvider({ children }: Props) {
 			.catch((err: any) => {
 				error();
 			});
-		setUser({ username: 'Manas' });
+		// setUser({ username: 'Manas' });
 	};
 
 	const logout = () => {
-		authService.logout();
-		setUser(null);
-		router.push('/');
-		router.reload();
+		authService
+			.logout()
+			.then((res) => {
+				setUser(null);
+				router.push('/');
+				router.reload();
+			})
+			.catch((err: any) => {
+				console.error('Server Error');
+			});
 	};
 
 	// eslint-disable-next-line react/jsx-no-constructed-context-values

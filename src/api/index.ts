@@ -13,7 +13,8 @@ api.interceptors.response.use(
 	(res) => res,
 	(err: AxiosError) => {
 		if (err.response?.status === 403) {
-			api.get('/auth/refreshToken')
+			return api
+				.get('/auth/refreshToken')
 				.then((res) => {
 					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 					const token = res.data.accessToken;
@@ -23,6 +24,8 @@ api.interceptors.response.use(
 							if (token) {
 								// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 								req.headers['x-access-token'] = token;
+								// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+								req.headers.Authorization = `Bearer ${token}`;
 							}
 							return req;
 						},
@@ -31,16 +34,14 @@ api.interceptors.response.use(
 						},
 					);
 
-					// TODO: enable it when the backend sends reason for 403 to avoid looping
-					// if (err.config) {
-					// await api.request(err.config);
-					// }
+					if (err.response?.status === 403 && err.config) {
+						return api.request(err.config);
+					}
 					return res;
 				})
-				.catch((error) => {
-					console.error('error', error);
-				});
+				.catch((error: AxiosError) => error);
 		}
+		return err;
 	},
 );
 
