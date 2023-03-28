@@ -200,7 +200,6 @@ export default function Profile() {
 												className="input-field py-2.5"
 												name="gender"
 												value={gender}
-												disabled
 												onChange={(e) => {
 													if (isEditMode) {
 														setGender(

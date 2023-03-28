@@ -29,7 +29,7 @@ function IconButton({ className = '', onClick, leadingIcon }: ButtonProps) {
 	return (
 		<button
 			type="button"
-			className={`btn inline-flex mx-1 w-fit${className}`}
+			className={`btn inline-flex mx-1 w-fit ${className}`}
 			onClick={onClick}
 		>
 			<div>{leadingIcon}</div>

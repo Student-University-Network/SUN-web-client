@@ -12,7 +12,7 @@ import {
 	THeadCell,
 	THeaderRowCell,
 	TBody,
-	TRowCell,
+	TRow,
 	TDataCell,
 } from 'src/Components/TableComponents';
 
@@ -161,7 +161,7 @@ export default function Programs() {
 							</THeaderRowCell>
 						</THead>
 						<TBody>
-							<TRowCell className="text-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-gray-400">
+							<TRow className="text-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-gray-400">
 								<TDataCell className="font-semibold">
 									BE_INFT- Rev-2019
 								</TDataCell>
@@ -170,8 +170,8 @@ export default function Programs() {
 								<TDataCell>
 									<span className="tag">INFT</span>
 								</TDataCell>
-							</TRowCell>
-							<TRowCell>
+							</TRow>
+							<TRow>
 								<TDataCell className="font-semibold">
 									FE_CMPN- (C - Scheme)
 								</TDataCell>
@@ -180,8 +180,8 @@ export default function Programs() {
 								<TDataCell>
 									<span className="tag">CMPN</span>
 								</TDataCell>
-							</TRowCell>
-							<TRowCell>
+							</TRow>
+							<TRow>
 								<TDataCell className="font-semibold">
 									FE_CMPN- (C - Scheme)
 								</TDataCell>
@@ -190,8 +190,8 @@ export default function Programs() {
 								<TDataCell>
 									<span className="tag">CMPN</span>
 								</TDataCell>
-							</TRowCell>
-							<TRowCell>
+							</TRow>
+							<TRow>
 								<TDataCell className="font-semibold">
 									SE_INFT- (C - Scheme)
 								</TDataCell>
@@ -200,8 +200,8 @@ export default function Programs() {
 								<TDataCell>
 									<span className="tag">INFT</span>
 								</TDataCell>
-							</TRowCell>
-							<TRowCell>
+							</TRow>
+							<TRow>
 								<TDataCell className="font-semibold">
 									BE_ELEC- (C - Scheme)
 								</TDataCell>
@@ -210,7 +210,7 @@ export default function Programs() {
 								<TDataCell>
 									<span className="tag">ELEC</span>
 								</TDataCell>
-							</TRowCell>
+							</TRow>
 						</TBody>
 					</table>
 				</div>

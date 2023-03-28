@@ -1,149 +1,83 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable react/prop-types */
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable @typescript-eslint/naming-convention */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable react/no-array-index-key */
 import Sidebar from 'src/partials/Sidebar';
 import Navbar from 'src/partials/Navbar';
 import Head from 'next/head';
 import Container from 'src/partials/Container';
 import InputField from 'src/Components/InputField';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Button, IconButton } from 'src/Components/Button';
-import { v4 as uuidv4 } from 'uuid';
+import { useRouter } from 'next/router';
 import {
 	PlusCircleIcon,
 	MinusCircleIcon,
-	ChevronDownIcon,
-	ChevronUpIcon,
+	PencilIcon,
+	TrashIcon,
+	PlusIcon,
 } from '@heroicons/react/24/outline';
-import { type } from 'os';
+import ExpandableContainer from 'src/Components/ExpandableContainer';
+import {
+	THead,
+	THeaderRowCell,
+	THeadCell,
+	TBody,
+	TRow,
+	TDataCell,
+} from 'src/Components/TableComponents';
+import CourseModal from 'src/Components/CourseModal';
 
-// type InputValues = {
-// 	programName: string;
-// 	year: string;
-// 	duration: string;
-// 	tag: string;
-// 	semesters: [
-// 		{
-// 			id: string;
-// 			semesterName: string;
-// 			courses: [
-// 				{
-// 					id: string;
-// 					courseName: string;
-// 					optional: boolean;
-// 				},
-// 			];
-// 		},
-// 	];
-// };
-interface IToggleItem {
-	title: string;
-	content: React.ReactNode;
-	id: number;
-}
-function ToggleItem({ title, content, id }: IToggleItem) {
-	const [toggleElement, setToggleElement] = useState(false);
-	return (
-		<div className="shadow-md rounded-md overflow-hidden">
-			<div className="flex justify-between items-center space-x-10 p-2 bg-gray-200 dark:bg-gray-700">
-				<span className="text-l pl-4">{title}</span>
-				<IconButton
-					type="button"
-					leadingIcon={
-						toggleElement ? (
-							<ChevronUpIcon
-								className="w-4 h-4"
-								strokeWidth={2}
-							/>
-						) : (
-							<ChevronDownIcon
-								className="w-4 h-4"
-								strokeWidth={2}
-							/>
-						)
-					}
-					onClick={() => {
-						setToggleElement(!toggleElement);
-					}}
-				/>
-			</div>
-			{toggleElement ? <div className="p-4">{content}</div> : null}
-		</div>
-	);
+interface Course {
+	index: number;
+	courseName: string;
+	totalLectures: number;
+	compulsory: boolean;
 }
 
-type SemesterValues = [
-	{
-		id: string;
-		semesterName: string;
-		courses: [
-			{ id: string; courseName: string; optional: boolean },
-			{ id: string; courseName: string; optional: boolean },
-			{ id: string; courseName: string; optional: boolean },
-		];
-	},
-];
+interface Semester {
+	semesterName: string;
+	order: number;
+}
 
 export default function NewProgram() {
-	const [semesters, setSemesters] = useState([
+	const router = useRouter();
+
+	const [programName, setProgramName] = useState('');
+	const [startDate, setStartDate] = useState('');
+	const [endDate, setEndDate] = useState('');
+	const [duration, setDuration] = useState(0);
+	const [tag, setTag] = useState('');
+	const [currentSemIndex, setCurrentSemIndex] = useState(0);
+	const [semesters, setSemesters] = useState<Array<Semester>>([
 		{
-			id: uuidv4(),
 			semesterName: '',
-			courses: [
-				{
-					id: uuidv4(),
-					courseName: '',
-					optional: false,
-				},
-				{
-					id: uuidv4(),
-					courseName: '',
-					optional: false,
-				},
-				{
-					id: uuidv4(),
-					courseName: '',
-					optional: false,
-				},
-			],
+			order: 0,
 		},
 	]);
+	const [courses, setCourses] = useState<Array<Array<Course>>>([[]]);
+	const [showCourseModal, setShowCourseModal] = useState(false);
+	const [currentCourseData, setCurrentCourseData] = useState({
+		index: 0,
+		courseName: '',
+		totalLectures: 0,
+		compulsory: true,
+	});
+
 	const addNewSemester = () => {
-		const _semester = [...semesters];
-		_semester.push({
-			id: uuidv4(),
+		const newSemesters = [...semesters];
+		newSemesters.push({
 			semesterName: '',
-			courses: [
-				{
-					id: uuidv4(),
-					courseName: '',
-					optional: false,
-				},
-				{
-					id: uuidv4(),
-					courseName: '',
-					optional: false,
-				},
-				{
-					id: uuidv4(),
-					courseName: '',
-					optional: false,
-				},
-			],
+			order: newSemesters.length,
 		});
-		setSemesters(_semester);
+		setSemesters(newSemesters);
+		setCourses([...courses, []]);
 	};
-	const removeNewSemester = (id: string) => {
-		let _semester = [...semesters];
-		_semester = _semester.filter((semester) => semester.id !== id);
-		setSemesters(_semester);
+
+	const removeNewSemester = (index: number) => {
+		setSemesters(semesters.filter((_, _index) => _index !== index));
+		setCourses(courses.filter((_, _index) => _index !== index));
 	};
+
+	const onSubmit = () => {};
+
 	return (
 		<>
 			<Head>
@@ -160,131 +94,322 @@ export default function NewProgram() {
 			</Head>
 			<Navbar />
 			<Sidebar />
+
+			{showCourseModal ? (
+				<CourseModal
+					closePrompt={() => setShowCourseModal(false)}
+					saveCourse={(crsData: Course) => {
+						const newCourses = courses;
+						if (
+							crsData.index < newCourses[currentSemIndex].length
+						) {
+							newCourses[currentSemIndex][crsData.index] =
+								crsData;
+						} else {
+							newCourses[currentSemIndex].push(crsData);
+						}
+						setCourses([...newCourses]);
+					}}
+					courseData={currentCourseData}
+				/>
+			) : null}
+
 			<Container>
 				<section className="ml-3 h-full">
 					<form className="flex flex-col justify-center px-3 overflow-hidden">
 						<span className="inline-flex items-center text-2xl font-medium text-primary-800 dark:text-primary-500">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
-								width="20"
-								height="20"
-								strokeWidth={2}
-								stroke="currentColor"
-								className="mr-2"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-								/>
-							</svg>
+							<PlusCircleIcon className="m-8 h-8 mr-2" />
 							Add New Program
 						</span>
-						<div className="px-4 py-5 sm:p-6">
-							<div className="grid grid-cols-6 gap-6">
-								<InputField
-									name="programName"
-									className="col-span-6 lg:col-span-6"
-									label="Program Name"
-									type="text"
-								/>
-								<InputField
-									name="year"
-									className="col-span-6 lg:col-span-2"
-									label="Year"
-									type="text"
-								/>
-								<InputField
-									name="duration"
-									className="col-span-6 lg:col-span-2"
-									label="Duration"
-									type="text"
-								/>
-								<InputField
-									name="tag"
-									className="col-span-6 lg:col-span-2"
-									label="Tag"
-									type="text"
-								/>
-							</div>
+						<div className="px-4 py-5 sm:p-6 grid grid-cols-6 gap-6">
+							<InputField
+								name="programName"
+								className="col-span-6 lg:col-span-6"
+								label="Program Name"
+								type="text"
+								value={programName}
+								onChange={(e) => setProgramName(e.target.value)}
+							/>
+							<InputField
+								name="startYear"
+								className="col-span-6 lg:col-span-2"
+								label="Start Year"
+								type="date"
+								value={startDate}
+								onChange={(e) => setStartDate(e.target.value)}
+							/>
+							<InputField
+								name="endYear"
+								className="col-span-6 lg:col-span-2"
+								label="End year"
+								type="date"
+								value={endDate}
+								onChange={(e) => setEndDate(e.target.value)}
+							/>
+							<InputField
+								name="tag"
+								className="col-span-6 lg:col-span-2"
+								label="Tag"
+								type="text"
+								value={tag}
+								onChange={(e) => setTag(e.target.value)}
+							/>
+							<InputField
+								name="duration"
+								className="col-span-6 lg:col-span-2"
+								label="Duration"
+								type="number"
+								min={1}
+								value={duration}
+								onChange={(e) =>
+									setDuration(parseInt(e.target.value, 10))
+								}
+							/>
 						</div>
 
 						<div className="px-4 py-5 sm:p-6">
-							<p className="inline-flex mb-6 items-center text-base font-medium text-primary-800 dark:text-primary-500">
+							<div className="mb-6 font-medium text-primary-800 dark:text-primary-500">
 								Semesters
-							</p>
-							{semesters.map((semester, id) => (
+							</div>
+							{semesters.map((semester, semIndex) => (
 								<>
-									<ToggleItem
-										title={`Semester ${id}`}
-										id={id}
+									<ExpandableContainer
+										title={`Semester ${semIndex + 1}`}
+										key={`semester_${semIndex}`}
 										content={
-											<span>
-												<div className="grid grid-cols-6 gap-6 ">
-													<InputField
-														key={semester.id}
-														name="semesterName"
-														className="col-span-6 lg:col-span-6"
-														label="Semester Name"
-														type="text"
-													/>
-													{semester.courses.map(
-														(course) => (
-															<InputField
-																key={course.id}
-																name="courseName"
-																className="col-span-2"
-																label="Course Name"
-																type="text"
+											<div className="grid grid-cols-6 gap-6">
+												<InputField
+													name="semesterName"
+													className="col-span-6 lg:col-span-3"
+													label="Semester Name"
+													type="text"
+													value={
+														semester.semesterName
+													}
+													onChange={(e) => {
+														semesters[
+															semIndex
+														].semesterName =
+															e.target.value;
+														setSemesters([
+															...semesters,
+														]);
+													}}
+												/>
+												<InputField
+													name="order"
+													className="col-span-6 lg:col-span-3"
+													label="Order"
+													type="number"
+													readOnly
+													value={semIndex}
+												/>
+												<table className="w-full col-span-6">
+													<THead>
+														<THeaderRowCell>
+															<THeadCell width="40%">
+																Course Name
+															</THeadCell>
+															<THeadCell width="20%">
+																Total lectures
+															</THeadCell>
+															<THeadCell width="20%">
+																Compulsory
+															</THeadCell>
+															<THeadCell width="20%">
+																Action
+															</THeadCell>
+														</THeaderRowCell>
+													</THead>
+													<TBody>
+														{courses[semIndex]
+															.length === 0 ? (
+															<TRow>
+																<TDataCell
+																	colSpan={4}
+																>
+																	No courses
+																	added
+																</TDataCell>
+															</TRow>
+														) : null}
+														{courses[semIndex].map(
+															(
+																course,
+																crsIndex,
+															) => (
+																<TRow
+																	key={`course_${crsIndex}`}
+																	className="text-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-gray-400"
+																>
+																	<TDataCell className="font-semibold">
+																		{
+																			course.courseName
+																		}
+																	</TDataCell>
+																	<TDataCell>
+																		{
+																			course.totalLectures
+																		}{' '}
+																		Lectures
+																	</TDataCell>
+																	<TDataCell>
+																		{course.compulsory
+																			? 'Compulsory'
+																			: 'Optional'}
+																	</TDataCell>
+																	<TDataCell>
+																		<IconButton
+																			className="btn-outline"
+																			leadingIcon={
+																				<PencilIcon
+																					className="w-4 h-4"
+																					strokeWidth={
+																						2
+																					}
+																				/>
+																			}
+																			onClick={() => {
+																				setCurrentCourseData(
+																					course,
+																				);
+																				setCurrentSemIndex(
+																					semIndex,
+																				);
+																				setShowCourseModal(
+																					true,
+																				);
+																			}}
+																		/>
+																		<IconButton
+																			className="btn-outline"
+																			leadingIcon={
+																				<TrashIcon
+																					className="w-4 h-4"
+																					strokeWidth={
+																						2
+																					}
+																				/>
+																			}
+																			onClick={() => {
+																				const newCourses =
+																					courses;
+																				newCourses[
+																					semIndex
+																				] =
+																					newCourses[
+																						semIndex
+																					].filter(
+																						(
+																							_,
+																							_index,
+																						) =>
+																							_index !==
+																							crsIndex,
+																					);
+																				setCourses(
+																					[
+																						...newCourses,
+																					],
+																				);
+																			}}
+																		/>
+																	</TDataCell>
+																</TRow>
+															),
+														)}
+														<TRow>
+															<TDataCell
+																className="p-0"
+																colSpan={4}
+															>
+																<Button
+																	className="btn-text w-full justify-center shadow-none border-none bg-transparent"
+																	leadingIcon={
+																		<PlusIcon
+																			className="w-4 h-4"
+																			strokeWidth={
+																				2
+																			}
+																		/>
+																	}
+																	label="New Course"
+																	onClick={() => {
+																		setCurrentCourseData(
+																			{
+																				index: courses[
+																					semIndex
+																				]
+																					.length,
+																				courseName:
+																					'',
+																				totalLectures: 0,
+																				compulsory:
+																					true,
+																			},
+																		);
+																		setCurrentSemIndex(
+																			semIndex,
+																		);
+																		setShowCourseModal(
+																			true,
+																		);
+																	}}
+																/>
+															</TDataCell>
+														</TRow>
+													</TBody>
+												</table>
+												<hr className="col-span-6" />
+												<div className="flex flex-row space-x-2 col-span-4">
+													<Button
+														className="btn-outline"
+														onClick={() =>
+															addNewSemester()
+														}
+														leadingIcon={
+															<PlusCircleIcon
+																className="w-5 h-5"
+																strokeWidth={2}
 															/>
-														),
-													)}
-													<div className="flex flex-row space-x-2 pt-4 col-span-4">
+														}
+														label="Add Semester"
+													/>
+													{semesters.length > 1 ? (
 														<Button
 															className="btn-outline"
 															onClick={() =>
-																addNewSemester()
+																removeNewSemester(
+																	semIndex,
+																)
 															}
 															leadingIcon={
-																<PlusCircleIcon
+																<MinusCircleIcon
 																	className="w-5 h-5"
 																	strokeWidth={
 																		2
 																	}
 																/>
 															}
-															label="Add Semester"
+															label="Remove Semester"
 														/>
-														{semesters.length >
-															1 && (
-															<Button
-																className="btn-outline"
-																onClick={() =>
-																	removeNewSemester(
-																		semester.id,
-																	)
-																}
-																leadingIcon={
-																	<MinusCircleIcon
-																		className="w-5 h-5"
-																		strokeWidth={
-																			2
-																		}
-																	/>
-																}
-																label="Remove Semester"
-															/>
-														)}
-													</div>
+													) : null}
 												</div>
-											</span>
+											</div>
 										}
 									/>
 									<div className="my-6" />
 								</>
 							))}
+						</div>
+						<div className="px-4 ml-3 col-span-6 flex flex-row space-x-4 mt-6">
+							<Button label="Create" onClick={() => onSubmit()} />
+							<Button
+								label="Cancel"
+								onClick={() => {
+									router.push('/programs');
+								}}
+							/>
 						</div>
 					</form>
 				</section>
