@@ -24,6 +24,8 @@ import {
 	TDataCell,
 } from 'src/Components/TableComponents';
 import CourseModal from 'src/Components/CourseModal';
+import { ERROR, INFO, useAlert } from 'src/Components/Alert';
+import { useProgram } from 'src/context/ProgramContext';
 
 interface Course {
 	index: number;
@@ -37,12 +39,18 @@ interface Semester {
 	order: number;
 }
 
+interface Batch {
+	batchName: string;
+}
+
 export default function NewProgram() {
 	const router = useRouter();
+	const { showAlert } = useAlert();
+	const { createProgram } = useProgram();
 
 	const [programName, setProgramName] = useState('');
-	const [startDate, setStartDate] = useState('');
-	const [endDate, setEndDate] = useState('');
+	const [startYear, setStartYear] = useState('');
+	const [endYear, setEndYear] = useState('');
 	const [duration, setDuration] = useState(0);
 	const [tag, setTag] = useState('');
 	const [currentSemIndex, setCurrentSemIndex] = useState(0);
@@ -60,6 +68,7 @@ export default function NewProgram() {
 		totalLectures: 0,
 		compulsory: true,
 	});
+	const [batches, setBatches] = useState<Array<Batch>>([]);
 
 	const addNewSemester = () => {
 		const newSemesters = [...semesters];
@@ -76,7 +85,40 @@ export default function NewProgram() {
 		setCourses(courses.filter((_, _index) => _index !== index));
 	};
 
-	const onSubmit = () => {};
+	const onSubmit = () => {
+		const newProgram = {
+			programName,
+			duration,
+			startYear: new Date(startYear).toISOString(),
+			endYear: new Date(endYear).toISOString(),
+			tag,
+			batches,
+			currentSemester: 0,
+			semesters: semesters.map((sem, i) => ({
+				semesterName: sem.semesterName,
+				order: sem.order,
+				courses: courses[i].map((crs) => ({
+					courseName: crs.courseName,
+					totalLectures: crs.totalLectures,
+					compulsory: crs.compulsory,
+				})),
+			})),
+		};
+
+		createProgram(
+			newProgram,
+			() => {
+				showAlert(INFO, 'New program successfully created', true);
+				router.push('/program');
+			},
+			() =>
+				showAlert(
+					ERROR,
+					'Oops something went wrong !! Please try again',
+					true,
+				),
+		);
+	};
 
 	return (
 		<>
@@ -135,16 +177,16 @@ export default function NewProgram() {
 								className="col-span-6 lg:col-span-2"
 								label="Start Year"
 								type="date"
-								value={startDate}
-								onChange={(e) => setStartDate(e.target.value)}
+								value={startYear}
+								onChange={(e) => setStartYear(e.target.value)}
 							/>
 							<InputField
 								name="endYear"
 								className="col-span-6 lg:col-span-2"
 								label="End year"
 								type="date"
-								value={endDate}
-								onChange={(e) => setEndDate(e.target.value)}
+								value={endYear}
+								onChange={(e) => setEndYear(e.target.value)}
 							/>
 							<InputField
 								name="tag"
@@ -165,6 +207,124 @@ export default function NewProgram() {
 									setDuration(parseInt(e.target.value, 10))
 								}
 							/>
+						</div>
+
+						<div className="px-4 py-5 sm:p-6">
+							<div className="mb-6 font-medium text-primary-800 dark:text-primary-500">
+								Batches
+							</div>
+							<table className="w-full col-span-6">
+								<THead>
+									<THeaderRowCell>
+										<THeadCell width="20%">
+											Sr no.
+										</THeadCell>
+										<THeadCell width="60%">
+											Batch Name
+										</THeadCell>
+										<THeadCell width="20%" />
+									</THeaderRowCell>
+								</THead>
+								<TBody>
+									{batches.length === 0 ? (
+										<TRow>
+											<TDataCell
+												colSpan={4}
+												className="text-center"
+											>
+												No batches added
+											</TDataCell>
+										</TRow>
+									) : null}
+									{batches.map((batch, batchIndex) => (
+										<TRow
+											key={`course_${batchIndex}`}
+											className="text-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-gray-400"
+										>
+											<TDataCell className="font-semibold">
+												{batchIndex + 1}
+											</TDataCell>
+											<TDataCell>
+												<textarea
+													className="bg-transparent resize-x max-h-4 focus:border-none focus:outline-none w-full border-none"
+													cols={1}
+													value={batch.batchName}
+													onChange={(e) => {
+														const newBatches = [
+															...batches,
+														];
+														newBatches[
+															batchIndex
+														].batchName =
+															e.target.value;
+														setBatches(newBatches);
+													}}
+													onBlur={(e) => {
+														const newBatches = [
+															...batches,
+														];
+														newBatches[
+															batchIndex
+														].batchName =
+															e.target.value;
+														if (
+															e.target.value ===
+															''
+														) {
+															newBatches[
+																batchIndex
+															].batchName = `Batch ${batchIndex}`;
+														}
+														setBatches(newBatches);
+													}}
+												/>
+											</TDataCell>
+											<TDataCell className="flex justify-center">
+												<IconButton
+													className="btn-outline"
+													leadingIcon={
+														<TrashIcon
+															className="w-4 h-4"
+															strokeWidth={2}
+														/>
+													}
+													onClick={() => {
+														setBatches(
+															batches.filter(
+																(_, _index) =>
+																	_index !==
+																	batchIndex,
+															),
+														);
+													}}
+												/>
+											</TDataCell>
+										</TRow>
+									))}
+									<TRow>
+										<TDataCell className="p-0" colSpan={3}>
+											<Button
+												className="btn-text w-full justify-center shadow-none border-none bg-transparent"
+												leadingIcon={
+													<PlusIcon
+														className="w-4 h-4"
+														strokeWidth={2}
+													/>
+												}
+												label="New Batch"
+												onClick={() =>
+													setBatches([
+														...batches,
+														{
+															batchName: `Batch ${batches.length}`,
+														},
+													])
+												}
+											/>
+										</TDataCell>
+									</TRow>
+								</TBody>
+							</table>
 						</div>
 
 						<div className="px-4 py-5 sm:p-6">
@@ -343,7 +503,7 @@ export default function NewProgram() {
 																					.length,
 																				courseName:
 																					'',
-																				totalLectures: 0,
+																				totalLectures: 1,
 																				compulsory:
 																					true,
 																			},

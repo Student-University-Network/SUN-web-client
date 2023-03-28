@@ -15,8 +15,32 @@ import {
 	TRow,
 	TDataCell,
 } from 'src/Components/TableComponents';
+import { useProgram } from 'src/context/ProgramContext';
+import { useEffect } from 'react';
+import { ERROR, useAlert } from 'src/Components/Alert';
+import { useUser } from 'src/context/UserContext';
+import {
+	AcademicCapIcon,
+	ChartBarIcon,
+	PlusCircleIcon,
+} from '@heroicons/react/24/outline';
 
 export default function Programs() {
+	const { programsList, getProgramsList } = useProgram();
+	const { showAlert } = useAlert();
+	const { userId } = useUser();
+
+	useEffect(() => {
+		if (userId !== '') {
+			getProgramsList(
+				() => {},
+				() => {
+					showAlert(ERROR, 'Failed to get programs list', true);
+				},
+			);
+		}
+	}, [userId]);
+
 	return (
 		<>
 			<Head>
@@ -37,46 +61,26 @@ export default function Programs() {
 				<div className="grid grid-cols-1 gap-2 px-2 sm:grid-cols-2 lg:grid-cols-3">
 					<PageMetric
 						label="Active"
-						value={10}
+						value={programsList.length}
 						logo={
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="30"
-								height="30"
-								fill="none"
-								viewBox="0 0 24 24"
+							<ChartBarIcon
+								height={30}
+								width={30}
 								strokeWidth={2}
-								stroke="currentColor"
 								className="transition-transform duration-500 ease-in-out transform stroke-current text-primary-800 dark:text-gray-800"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"
-								/>
-							</svg>
+							/>
 						}
 					/>
 					<PageMetric
 						label="Total"
-						value={100}
+						value={programsList.length}
 						logo={
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
-								width="30"
-								height="30"
+							<AcademicCapIcon
+								height={30}
+								width={30}
 								strokeWidth={2}
-								stroke="currentColor"
 								className="transition-transform duration-500 ease-in-out transform stroke-current text-primary-800 dark:text-gray-800"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5"
-								/>
-							</svg>
+							/>
 						}
 					/>
 					<Link
@@ -85,22 +89,12 @@ export default function Programs() {
 					>
 						<p className="pl-2 text-xl">New Program</p>
 						<div className="flex items-center justify-center transition-all duration-300 transform bg-white rounded-full w-14 h-14 group-hover:rotate-12">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
-								width="30"
-								height="30"
+							<PlusCircleIcon
+								height={30}
+								width={30}
 								strokeWidth={2}
-								stroke="currentColor"
 								className="transition-transform duration-500 ease-in-out transform stroke-current text-primary-800 dark:text-gray-800"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-								/>
-							</svg>
+							/>
 						</div>
 					</Link>
 				</div>
@@ -161,56 +155,40 @@ export default function Programs() {
 							</THeaderRowCell>
 						</THead>
 						<TBody>
-							<TRow className="text-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-gray-400">
-								<TDataCell className="font-semibold">
-									BE_INFT- Rev-2019
-								</TDataCell>
-								<TDataCell>2019-23</TDataCell>
-								<TDataCell>4 years</TDataCell>
-								<TDataCell>
-									<span className="tag">INFT</span>
-								</TDataCell>
-							</TRow>
-							<TRow>
-								<TDataCell className="font-semibold">
-									FE_CMPN- (C - Scheme)
-								</TDataCell>
-								<TDataCell>2021-25</TDataCell>
-								<TDataCell>4 years</TDataCell>
-								<TDataCell>
-									<span className="tag">CMPN</span>
-								</TDataCell>
-							</TRow>
-							<TRow>
-								<TDataCell className="font-semibold">
-									FE_CMPN- (C - Scheme)
-								</TDataCell>
-								<TDataCell>2021-25</TDataCell>
-								<TDataCell>4 years</TDataCell>
-								<TDataCell>
-									<span className="tag">CMPN</span>
-								</TDataCell>
-							</TRow>
-							<TRow>
-								<TDataCell className="font-semibold">
-									SE_INFT- (C - Scheme)
-								</TDataCell>
-								<TDataCell>2021-25</TDataCell>
-								<TDataCell>4 years</TDataCell>
-								<TDataCell>
-									<span className="tag">INFT</span>
-								</TDataCell>
-							</TRow>
-							<TRow>
-								<TDataCell className="font-semibold">
-									BE_ELEC- (C - Scheme)
-								</TDataCell>
-								<TDataCell>2021-25</TDataCell>
-								<TDataCell>4 years</TDataCell>
-								<TDataCell>
-									<span className="tag">ELEC</span>
-								</TDataCell>
-							</TRow>
+							{programsList.length === 0 ? (
+								<TRow>
+									<TDataCell
+										colSpan={4}
+										className="text-center"
+									>
+										No programs created
+									</TDataCell>
+								</TRow>
+							) : null}
+							{programsList.map((program) => (
+								<TRow key={program.programId}>
+									<TDataCell className="font-semibold">
+										{program.programName}
+									</TDataCell>
+									<TDataCell>
+										{new Date(
+											program.startYear,
+										).getFullYear()}
+										-
+										{new Date(
+											program.endYear,
+										).getFullYear()}
+									</TDataCell>
+									<TDataCell>
+										{program.duration / 2} years
+									</TDataCell>
+									<TDataCell>
+										<span className="tag">
+											{program.tag}
+										</span>
+									</TDataCell>
+								</TRow>
+							))}
 						</TBody>
 					</table>
 				</div>

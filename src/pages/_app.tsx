@@ -5,6 +5,7 @@ import { AuthProvider } from 'src/context/AuthContext';
 import { UserProvider } from 'src/context/UserContext';
 import LoadingScreen from 'src/partials/LoadingScreen';
 import { Alert } from 'src/Components/Alert';
+import { ProgramProvider } from 'src/context/ProgramContext';
 import { GlobalContextProvider } from '../context/store';
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -12,12 +13,17 @@ export default function App({ Component, pageProps }: AppProps) {
 		<GlobalContextProvider>
 			<AuthProvider>
 				<UserProvider>
-					<Alert>
-						<LoadingScreen />
-						<ThemeProvider attribute="class" enableSystem={false}>
-							<Component {...pageProps} />
-						</ThemeProvider>
-					</Alert>
+					<ProgramProvider>
+						<Alert>
+							<LoadingScreen />
+							<ThemeProvider
+								attribute="class"
+								enableSystem={false}
+							>
+								<Component {...pageProps} />
+							</ThemeProvider>
+						</Alert>
+					</ProgramProvider>
 				</UserProvider>
 			</AuthProvider>
 		</GlobalContextProvider>
