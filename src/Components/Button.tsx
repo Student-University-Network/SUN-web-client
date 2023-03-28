@@ -18,7 +18,7 @@ function Button({
 	trailingIcon,
 }: ButtonProps) {
 	return (
-		<button type="button" className={`btn${className}`} onClick={onClick}>
+		<button type="button" className={`btn ${className}`} onClick={onClick}>
 			<div>{leadingIcon}</div>
 			<div>{label}</div>
 			<div>{trailingIcon}</div>

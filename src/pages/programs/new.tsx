@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react/prop-types */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
@@ -13,7 +15,13 @@ import InputField from 'src/Components/InputField';
 import { useEffect, useState } from 'react';
 import { Button, IconButton } from 'src/Components/Button';
 import { v4 as uuidv4 } from 'uuid';
-import { PlusCircleIcon, MinusCircleIcon } from '@heroicons/react/24/outline';
+import {
+	PlusCircleIcon,
+	MinusCircleIcon,
+	ChevronDownIcon,
+	ChevronUpIcon,
+} from '@heroicons/react/24/outline';
+import { type } from 'os';
 
 // type InputValues = {
 // 	programName: string;
@@ -34,6 +42,41 @@ import { PlusCircleIcon, MinusCircleIcon } from '@heroicons/react/24/outline';
 // 		},
 // 	];
 // };
+interface IToggleItem {
+	title: string;
+	content: React.ReactNode;
+	id: number;
+}
+function ToggleItem({ title, content, id }: IToggleItem) {
+	const [toggleElement, setToggleElement] = useState(false);
+	return (
+		<div className="shadow-md rounded-md overflow-hidden">
+			<div className="flex justify-between items-center space-x-10 p-2 bg-gray-200 dark:bg-gray-700">
+				<span className="text-l pl-4">{title}</span>
+				<IconButton
+					type="button"
+					leadingIcon={
+						toggleElement ? (
+							<ChevronUpIcon
+								className="w-4 h-4"
+								strokeWidth={2}
+							/>
+						) : (
+							<ChevronDownIcon
+								className="w-4 h-4"
+								strokeWidth={2}
+							/>
+						)
+					}
+					onClick={() => {
+						setToggleElement(!toggleElement);
+					}}
+				/>
+			</div>
+			{toggleElement ? <div className="p-4">{content}</div> : null}
+		</div>
+	);
+}
 
 type SemesterValues = [
 	{
@@ -172,61 +215,78 @@ export default function NewProgram() {
 							<p className="inline-flex mb-6 items-center text-base font-medium text-primary-800 dark:text-primary-500">
 								Semesters
 							</p>
-
-							{semesters.map((semester) => (
+							{semesters.map((semester, id) => (
 								<>
-									<div className="grid grid-cols-6 gap-6 mb-4">
-										<InputField
-											key={semester.id}
-											name="semesterName"
-											className="col-span-6 lg:col-span-6"
-											label="Semester Name"
-											type="text"
-										/>
-										{semester.courses.map((course) => (
-											<InputField
-												key={course.id}
-												name="courseName"
-												className="col-span-2"
-												label="Course Name"
-												type="text"
-											/>
-										))}
-										<div className="flex flex-row space-x-3 col-span-4">
-											<Button
-												onClick={() => addNewSemester()}
-												leadingIcon={
-													<PlusCircleIcon
-														className="w-5 h-5"
-														strokeWidth={2}
+									<ToggleItem
+										title={`Semester ${id}`}
+										id={id}
+										content={
+											<span>
+												<div className="grid grid-cols-6 gap-6 ">
+													<InputField
+														key={semester.id}
+														name="semesterName"
+														className="col-span-6 lg:col-span-6"
+														label="Semester Name"
+														type="text"
 													/>
-												}
-												label="Add Semester"
-											/>
-											{semesters.length > 1 && (
-												<Button
-													onClick={() =>
-														removeNewSemester(
-															semester.id,
-														)
-													}
-													leadingIcon={
-														<MinusCircleIcon
-															className="w-5 h-5"
-															strokeWidth={2}
+													{semester.courses.map(
+														(course) => (
+															<InputField
+																key={course.id}
+																name="courseName"
+																className="col-span-2"
+																label="Course Name"
+																type="text"
+															/>
+														),
+													)}
+													<div className="flex flex-row space-x-2 pt-4 col-span-4">
+														<Button
+															className="btn-outline"
+															onClick={() =>
+																addNewSemester()
+															}
+															leadingIcon={
+																<PlusCircleIcon
+																	className="w-5 h-5"
+																	strokeWidth={
+																		2
+																	}
+																/>
+															}
+															label="Add Semester"
 														/>
-													}
-													label="Remove Semester"
-												/>
-											)}
-										</div>
-									</div>
-									<hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
+														{semesters.length >
+															1 && (
+															<Button
+																className="btn-outline"
+																onClick={() =>
+																	removeNewSemester(
+																		semester.id,
+																	)
+																}
+																leadingIcon={
+																	<MinusCircleIcon
+																		className="w-5 h-5"
+																		strokeWidth={
+																			2
+																		}
+																	/>
+																}
+																label="Remove Semester"
+															/>
+														)}
+													</div>
+												</div>
+											</span>
+										}
+									/>
+									<div className="my-6" />
 								</>
 							))}
 						</div>
 					</form>
-					<pre>{JSON.stringify(semesters, null, 4)}</pre>
 				</section>
 			</Container>
 		</>

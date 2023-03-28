@@ -7,6 +7,14 @@ import PageMetric from 'src/Components/PageMetric';
 import InputField from 'src/Components/InputField';
 import { Button } from 'src/Components/Button';
 import Link from 'next/link';
+import {
+	THead,
+	THeadCell,
+	THeaderRowCell,
+	TBody,
+	TRowCell,
+	TDataCell,
+} from 'src/Components/TableComponents';
 
 export default function Programs() {
 	return (
@@ -144,111 +152,66 @@ export default function Programs() {
 				</div>
 				<div className="w-full px-3 overflow-x-auto rounded-sm">
 					<table className="w-full">
-						<thead>
-							<tr className="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
-								<th className="px-4 py-3">Program name</th>
-								<th className="px-4 py-3">Year</th>
-								<th className="px-4 py-3">Duration</th>
-								<th className="px-4 py-3">Tag</th>
-							</tr>
-						</thead>
-						<tbody className="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-							<tr className="text-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-gray-400">
-								<td className="p-4">
-									<div className="flex items-center text-sm">
-										<div>
-											<p className="font-semibold">
-												BE_INFT- Rev-2019
-											</p>
-										</div>
-									</div>
-								</td>
-								<td className="p-4 text-sm">2019-23</td>
-								<td className="p-4 text-sm">4 years</td>
-								<td className="p-4 text-xs">
-									<span className="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">
-										{' '}
-										INFT{' '}
-									</span>
-								</td>
-							</tr>
-							<tr className="text-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-gray-400">
-								<td className="p-4">
-									<div className="flex items-center text-sm">
-										<div>
-											<p className="font-semibold">
-												FE_CMPN- (C - Scheme)
-											</p>
-										</div>
-									</div>
-								</td>
-								<td className="p-4 text-sm">2021-25</td>
-								<td className="p-4 text-sm">4 years</td>
-								<td className="p-4 text-xs">
-									<span className="px-2 py-1 font-semibold leading-tight text-yellow-700 bg-yellow-100 rounded-full">
-										{' '}
-										CMPN{' '}
-									</span>
-								</td>
-							</tr>
-							<tr className="text-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-gray-400">
-								<td className="px-4 py-4">
-									<div className="flex items-center text-sm">
-										<div>
-											<p className="font-semibold">
-												TE_EXTC- (C - Scheme)
-											</p>
-										</div>
-									</div>
-								</td>
-								<td className="px-4 py-4 text-sm">2020-24</td>
-								<td className="px-4 py-4 text-sm">4 years</td>
-								<td className="px-4 py-4 text-xs">
-									<span className="px-2 py-1 font-semibold leading-tight text-gray-700 bg-gray-100 rounded-full dark:text-gray-100 dark:bg-gray-700">
-										{' '}
-										EXTC{' '}
-									</span>
-								</td>
-							</tr>
-							<tr className="text-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-gray-400">
-								<td className="px-4 py-4">
-									<div className="flex items-center text-sm">
-										<div>
-											<p className="font-semibold">
-												SE_INFT- (C - Scheme)
-											</p>
-										</div>
-									</div>
-								</td>
-								<td className="px-4 py-4 text-sm">2020-24</td>
-								<td className="px-4 py-4 text-sm">4 years</td>
-								<td className="px-4 py-4 text-xs">
-									<span className="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">
-										{' '}
-										INFT{' '}
-									</span>
-								</td>
-							</tr>
-							<tr className="text-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-gray-400">
-								<td className="px-4 py-3">
-									<div className="flex items-center text-sm">
-										<div>
-											<p className="font-semibold">
-												BE_ELEC- (C - Scheme)
-											</p>
-										</div>
-									</div>
-								</td>
-								<td className="px-4 py-3 text-sm">2019-23</td>
-								<td className="px-4 py-3 text-sm">4 years</td>
-								<td className="px-4 py-3 text-xs">
-									<span className="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-700">
-										{' '}
-										ELEC{' '}
-									</span>
-								</td>
-							</tr>
-						</tbody>
+						<THead>
+							<THeaderRowCell>
+								<THeadCell>Program Name</THeadCell>
+								<THeadCell>Year</THeadCell>
+								<THeadCell>Duration</THeadCell>
+								<THeadCell>Tag</THeadCell>
+							</THeaderRowCell>
+						</THead>
+						<TBody>
+							<TRowCell className="text-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-gray-400">
+								<TDataCell className="font-semibold">
+									BE_INFT- Rev-2019
+								</TDataCell>
+								<TDataCell>2019-23</TDataCell>
+								<TDataCell>4 years</TDataCell>
+								<TDataCell>
+									<span className="tag">INFT</span>
+								</TDataCell>
+							</TRowCell>
+							<TRowCell>
+								<TDataCell className="font-semibold">
+									FE_CMPN- (C - Scheme)
+								</TDataCell>
+								<TDataCell>2021-25</TDataCell>
+								<TDataCell>4 years</TDataCell>
+								<TDataCell>
+									<span className="tag">CMPN</span>
+								</TDataCell>
+							</TRowCell>
+							<TRowCell>
+								<TDataCell className="font-semibold">
+									FE_CMPN- (C - Scheme)
+								</TDataCell>
+								<TDataCell>2021-25</TDataCell>
+								<TDataCell>4 years</TDataCell>
+								<TDataCell>
+									<span className="tag">CMPN</span>
+								</TDataCell>
+							</TRowCell>
+							<TRowCell>
+								<TDataCell className="font-semibold">
+									SE_INFT- (C - Scheme)
+								</TDataCell>
+								<TDataCell>2021-25</TDataCell>
+								<TDataCell>4 years</TDataCell>
+								<TDataCell>
+									<span className="tag">INFT</span>
+								</TDataCell>
+							</TRowCell>
+							<TRowCell>
+								<TDataCell className="font-semibold">
+									BE_ELEC- (C - Scheme)
+								</TDataCell>
+								<TDataCell>2021-25</TDataCell>
+								<TDataCell>4 years</TDataCell>
+								<TDataCell>
+									<span className="tag">ELEC</span>
+								</TDataCell>
+							</TRowCell>
+						</TBody>
 					</table>
 				</div>
 			</Container>

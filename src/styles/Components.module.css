@@ -7,10 +7,18 @@
 		@apply w-full p-2 mt-2 font-semibold text-gray-800
          bg-white border border-gray-400 rounded-lg dark:bg-gray-800
           dark:border-gray-700 dark:text-gray-50 focus:border-primary-800
-           dark:focus:border-primary-500 focus:outline-none;
+           dark:focus:border-primary-500 focus:outline-none read-only:cursor-not-allowed read-only:border-none
+		   read-only:focus:border-none;
 	}
 	.btn {
 		@apply bg-primary-500 dark:bg-primary-900 text-white flex px-4 py-2 items-center space-x-2
 		hover:bg-primary-600 active:bg-primary-700 active:ring active:ring-primary-300;
+	}
+	.btn-outline {
+		@apply text-primary-500 hover:text-white border py-2 border-primary-500 hover:bg-primary-500 bg-transparent text-sm px-5 text-center dark:bg-transparent dark:text-primary-500 dark:hover:text-white dark:hover:bg-primary-900;
+	}
+	.tag {
+		@apply px-2 py-1 font-medium leading-tight text-green-700 bg-green-100
+		 rounded-full dark:bg-green-700 dark:text-green-100;
 	}
 }
