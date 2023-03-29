@@ -24,7 +24,7 @@ import {
 	TDataCell,
 } from 'src/Components/TableComponents';
 import CourseModal from 'src/Components/CourseModal';
-import { ERROR, INFO, useAlert } from 'src/Components/Alert';
+import { ERROR, INFO, useAlert, WARNING } from 'src/Components/Alert';
 import { useProgram } from 'src/context/ProgramContext';
 
 interface Course {
@@ -86,6 +86,15 @@ export default function NewProgram() {
 	};
 
 	const onSubmit = () => {
+		if (startYear === '') {
+			showAlert(WARNING, 'Please enter start year', true);
+			return;
+		}
+		if (endYear === '') {
+			showAlert(WARNING, 'Please enter end year', true);
+			return;
+		}
+
 		const newProgram = {
 			programName,
 			duration,
@@ -109,7 +118,7 @@ export default function NewProgram() {
 			newProgram,
 			() => {
 				showAlert(INFO, 'New program successfully created', true);
-				router.push('/program');
+				router.push('/programs');
 			},
 			() =>
 				showAlert(

@@ -24,8 +24,10 @@ import {
 	ChartBarIcon,
 	PlusCircleIcon,
 } from '@heroicons/react/24/outline';
+import { useRouter } from 'next/router';
 
 export default function Programs() {
+	const router = useRouter();
 	const { programsList, getProgramsList } = useProgram();
 	const { showAlert } = useAlert();
 	const { userId } = useUser();
@@ -166,7 +168,18 @@ export default function Programs() {
 								</TRow>
 							) : null}
 							{programsList.map((program) => (
-								<TRow key={program.programId}>
+								<TRow
+									className="cursor-pointer"
+									key={program.programId}
+									onClick={() => {
+										router.push({
+											pathname: '/programs/view',
+											query: {
+												id: program.programId,
+											},
+										});
+									}}
+								>
 									<TDataCell className="font-semibold">
 										{program.programName}
 									</TDataCell>

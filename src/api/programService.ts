@@ -9,7 +9,7 @@ interface ProgramsListResponse {
 
 interface ProgramDetailsResponse {
 	status: string;
-	data: Array<Program>;
+	data: Program;
 }
 
 interface CreateProgramResponse {
@@ -28,26 +28,17 @@ class ProgramService {
 	}
 
 	getProgramDetails(programId: string) {
-		return http.get<ProgramDetailsResponse>('/program/:programId', {
-			params: {
-				programId,
-			},
-		});
+		return http.get<ProgramDetailsResponse>(`/program/${programId}`);
 	}
 
 	createProgram(payload: any) {
 		return http.post<CreateProgramResponse>('/program/new', payload);
 	}
 
-	updateProgram(programId: string, payload: Program) {
-		return http.post<UpdateProgramResponse>(
-			'/program/:programId',
+	updateProgram(programId: string, payload: any) {
+		return http.put<UpdateProgramResponse>(
+			`/program/${programId}`,
 			payload,
-			{
-				params: {
-					programId,
-				},
-			},
 		);
 	}
 }

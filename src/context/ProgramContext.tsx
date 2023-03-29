@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios';
 import { createContext, useContext, useState } from 'react';
 import programService from 'src/api/programService';
 
@@ -106,13 +107,21 @@ export function ProgramProvider({ children }: Props) {
 		[],
 	);
 
-	// const { user } = useAuth();
-
 	function getProgramDetails(
 		programId: string,
 		done: (data: any) => void,
 		error: (data: any) => void,
-	) {}
+	) {
+		programService
+			.getProgramDetails(programId)
+			.then((res) => {
+				setProgram(res.data.data);
+				done(null);
+			})
+			.catch((err: AxiosError) => {
+				error(null);
+			});
+	}
 
 	function getProgramsList(
 		done: (data: any) => void,
@@ -133,7 +142,6 @@ export function ProgramProvider({ children }: Props) {
 		done: (data: any) => void,
 		error: (data: any) => void,
 	) {
-		console.log('eifubeafjb');
 		programService
 			.createProgram(payload)
 			.then((res) => {
@@ -149,7 +157,17 @@ export function ProgramProvider({ children }: Props) {
 		payload: any,
 		done: (data: any) => void,
 		error: (data: any) => void,
-	) {}
+	) {
+		programService
+			.updateProgram(programId, payload)
+			.then((res) => {
+				setProgram(res.data.data);
+				done(null);
+			})
+			.catch((err: AxiosError) => {
+				error(null);
+			});
+	}
 
 	// eslint-disable-next-line react/jsx-no-constructed-context-values
 	const value = {
