@@ -1,8 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-import { PlusCircleIcon, PlusIcon } from '@heroicons/react/24/outline';
+import {
+	PlusCircleIcon,
+	PlusIcon,
+	TrashIcon,
+} from '@heroicons/react/24/outline';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { Button } from 'src/Components/Button';
+import { ERROR, INFO, useAlert, WARNING } from 'src/Components/Alert';
+import { Button, IconButton } from 'src/Components/Button';
 import InputField from 'src/Components/InputField';
 import ResourceSelector from 'src/Components/ResourceSelector';
 import {
@@ -13,22 +19,12 @@ import {
 	TRow,
 	TDataCell,
 } from 'src/Components/TableComponents';
-import { EmptyFunction } from 'src/Components/Utils';
+import { downloadFile, EmptyFunction, parseCSV } from 'src/Components/Utils';
+import { NewUserType, useAdmin } from 'src/context/AdminContext';
 import { ProgramListItem, useProgram } from 'src/context/ProgramContext';
 import Container from 'src/partials/Container';
 import Navbar from 'src/partials/Navbar';
 import Sidebar from 'src/partials/Sidebar';
-
-interface NewUserType {
-	firstName: string;
-	lastName: string;
-	email: string;
-	username?: string;
-	password?: string;
-	role: string;
-	programId?: string;
-	programName?: string;
-}
 
 function defaultState() {
 	return {
@@ -43,6 +39,9 @@ function defaultState() {
 
 export default function NewUsers() {
 	const { programsList, getProgramsList } = useProgram();
+	const { createBatchUsers } = useAdmin();
+	const { showAlert } = useAlert();
+	const router = useRouter();
 	const [newUsersData, setNewUsers] = useState<Array<NewUserType>>([]);
 	const [defaultRole, setDefaultRole] = useState('STUDENT');
 
@@ -106,7 +105,38 @@ export default function NewUsers() {
 		setResourcePicker(defaultState());
 	}
 
-	function submitCreateUsers() {}
+	function submitCreateUsers() {
+		if (newUsersData.length === 0) {
+			showAlert(WARNING, 'Please add atleast one user', true);
+			return;
+		}
+		if (
+			newUsersData.some(
+				(usr) =>
+					usr.firstName.length === 0 ||
+					usr.lastName.length === 0 ||
+					usr.email.length === 0,
+			)
+		) {
+			showAlert(WARNING, 'Please fill all required fields', true);
+			return;
+		}
+		createBatchUsers(
+			newUsersData,
+			(res: string) => {
+				showAlert(INFO, 'Successfully created users', true);
+				downloadFile(
+					res,
+					'text/csv',
+					`NewUsers${Math.round(Math.random() * 1e4)}`,
+				);
+				router.push('/users');
+			},
+			() => {
+				showAlert(ERROR, 'Failed to create users', true);
+			},
+		);
+	}
 
 	return (
 		<>
@@ -143,16 +173,48 @@ export default function NewUsers() {
 							Create New Users
 						</span>
 						<div className="px-4 py-5 sm:p-6 grid grid-cols-6 gap-6">
-							<div className="flex justify-end items-center py-2 space-x-2 col-span-6">
-								<Button
-									label="Create"
-									onClick={() => submitCreateUsers()}
+							<div className="flex justify-between items-center py-2 space-x-2 col-span-6">
+								<InputField
+									className="col-span-6 sm:col-span-3 p-1"
+									label="Select from CSV file"
+									type="file"
+									accept=".csv"
+									onChange={(e) => {
+										const file = e.target.files?.[0];
+										if (!file) return;
+										const reader = new FileReader();
+										reader.onload = (event) => {
+											try {
+												const data = parseCSV(
+													event.target?.result?.toString() ||
+														'',
+													',',
+												);
+												setNewUsers(
+													data as Array<NewUserType>,
+												);
+											} catch (err) {
+												showAlert(
+													ERROR,
+													'Failed to load from file',
+													true,
+												);
+											}
+										};
+										reader.readAsText(file);
+									}}
 								/>
-								<Button
-									className="btn-outline"
-									label="Reset"
-									onClick={() => setNewUsers([])}
-								/>
+								<div className="flex space-x-2">
+									<Button
+										label="Create"
+										onClick={() => submitCreateUsers()}
+									/>
+									<Button
+										className="btn-outline"
+										label="Reset"
+										onClick={() => setNewUsers([])}
+									/>
+								</div>
 							</div>
 							<table className="w-full col-span-6">
 								<THead>
@@ -162,7 +224,6 @@ export default function NewUsers() {
 										<THeadCell />
 										<THeadCell>
 											<div className="inline-flex flex-col items-start">
-												{/* TODO : set state */}
 												<label
 													htmlFor="role"
 													className="font-medium  text-primary-800 dark:text-primary-500 "
@@ -184,7 +245,6 @@ export default function NewUsers() {
 										</THeadCell>
 										<THeadCell>
 											<div className="inline-flex flex-col items-start">
-												{/* TODO : set state */}
 												<label
 													htmlFor="role"
 													className="font-medium text-primary-800 dark:text-primary-500 "
@@ -205,7 +265,6 @@ export default function NewUsers() {
 											</div>
 										</THeadCell>
 										<THeadCell>
-											{/* TODO : set state */}
 											<label
 												htmlFor="role"
 												className="font-medium text-primary-800 dark:text-primary-500 "
@@ -276,22 +335,39 @@ export default function NewUsers() {
 												Select
 											</div>
 										</THeadCell>
+										<THeadCell />
 									</THeaderRowCell>
 									<THeaderRowCell>
-										<THeadCell>First name</THeadCell>
-										<THeadCell>Last name</THeadCell>
-										<THeadCell>Email</THeadCell>
+										<THeadCell>
+											First name
+											<sup className="text-red-900 text-xs">
+												*
+											</sup>
+										</THeadCell>
+										<THeadCell>
+											Last name
+											<sup className="text-red-900 text-xs">
+												*
+											</sup>
+										</THeadCell>
+										<THeadCell>
+											Email
+											<sup className="text-red-900 text-xs">
+												*
+											</sup>
+										</THeadCell>
 										<THeadCell>Username</THeadCell>
 										<THeadCell>Password</THeadCell>
 										<THeadCell>Role</THeadCell>
 										<THeadCell>Program</THeadCell>
+										<THeadCell />
 									</THeaderRowCell>
 								</THead>
 								<TBody>
 									{newUsersData.length === 0 ? (
 										<TRow>
 											<TDataCell
-												colSpan={8}
+												colSpan={9}
 												className="text-center"
 											>
 												No data filled
@@ -304,6 +380,7 @@ export default function NewUsers() {
 												<InputField
 													className="input-field-unstyled"
 													value={row.firstName}
+													placeholder="null"
 													onChange={(e) => {
 														const newData = [
 															...newUsersData,
@@ -319,6 +396,7 @@ export default function NewUsers() {
 											<TDataCell className="p-0.5">
 												<InputField
 													className="input-field-unstyled"
+													placeholder="null"
 													value={row.lastName}
 													onChange={(e) => {
 														const newData = [
@@ -336,6 +414,7 @@ export default function NewUsers() {
 												<InputField
 													className="input-field-unstyled"
 													value={row.email}
+													placeholder="null"
 													onChange={(e) => {
 														const newData = [
 															...newUsersData,
@@ -351,6 +430,7 @@ export default function NewUsers() {
 											<TDataCell className="p-0.5">
 												<InputField
 													className="input-field-unstyled"
+													placeholder="empty"
 													value={row.username}
 													onChange={(e) => {
 														if (usernameGenerate)
@@ -370,6 +450,7 @@ export default function NewUsers() {
 											<TDataCell className="p-0.5">
 												<InputField
 													className="input-field-unstyled"
+													placeholder="empty"
 													value={row.password}
 													onChange={(e) => {
 														if (passwordGenerate)
@@ -417,6 +498,7 @@ export default function NewUsers() {
 											<TDataCell className="p-0.5">
 												<InputField
 													className="input-field-unstyled"
+													placeholder="null"
 													value={row.programName}
 													onChange={(e) => {
 														const newData = [
@@ -451,10 +533,30 @@ export default function NewUsers() {
 													}}
 												/>
 											</TDataCell>
+											<TDataCell>
+												<IconButton
+													className="btn-outline"
+													onClick={() =>
+														setNewUsers(
+															newUsersData.filter(
+																(
+																	usr,
+																	usrIndex,
+																) =>
+																	usrIndex !==
+																	rowIndex,
+															),
+														)
+													}
+													leadingIcon={
+														<TrashIcon className="w-5 h-5" />
+													}
+												/>
+											</TDataCell>
 										</TRow>
 									))}
 									<TRow>
-										<TDataCell className="p-0" colSpan={8}>
+										<TDataCell className="p-0" colSpan={9}>
 											<Button
 												className="btn-text w-full justify-center shadow-none border-none bg-transparent"
 												leadingIcon={

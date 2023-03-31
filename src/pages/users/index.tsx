@@ -20,8 +20,27 @@ import {
 	TDataCell,
 	TRow,
 } from 'src/Components/TableComponents';
+import { useAdmin } from 'src/context/AdminContext';
+import { useEffect } from 'react';
+import { ERROR, useAlert } from 'src/Components/Alert';
+import { useUser } from 'src/context/UserContext';
 
 export default function Users() {
+	const { usersList, getUsersList } = useAdmin();
+	const { userId } = useUser();
+	const { showAlert } = useAlert();
+
+	useEffect(() => {
+		if (userId !== '') {
+			getUsersList(
+				() => {},
+				() => {
+					showAlert(ERROR, 'Failed to get users list', true);
+				},
+			);
+		}
+	}, [userId]);
+
 	return (
 		<>
 			<Head>
@@ -43,8 +62,7 @@ export default function Users() {
 				<div className="grid grid-cols-1 gap-2 px-2 sm:grid-cols-2 lg:grid-cols-3">
 					<PageMetric
 						label="Active"
-						// TODO: use state
-						value={1}
+						value={usersList.length}
 						logo={
 							<ChartBarIcon
 								height={30}
@@ -56,8 +74,7 @@ export default function Users() {
 					/>
 					<PageMetric
 						label="Total"
-						// TODO: use state
-						value={1}
+						value={usersList.length}
 						logo={
 							<UsersIcon
 								height={30}
@@ -110,11 +127,39 @@ export default function Users() {
 							</THeaderRowCell>
 						</THead>
 						<TBody>
-							<TRow>
-								<TDataCell colSpan={3} className="text-center">
-									No Users created
-								</TDataCell>
-							</TRow>
+							{usersList.length === 0 ? (
+								<TRow>
+									<TDataCell
+										colSpan={3}
+										className="text-center"
+									>
+										No Users created
+									</TDataCell>
+								</TRow>
+							) : (
+								usersList.map((row, rowIndex) => (
+									<TRow>
+										<TDataCell>{row.username}</TDataCell>
+										<TDataCell>
+											{row.firstName} {row.lastName}
+										</TDataCell>
+										<TDataCell>
+											<div
+												className={`w-fit ${
+													// eslint-disable-next-line no-nested-ternary
+													row.role === 'ADMIN'
+														? 'admin-tag'
+														: row.role === 'STUDENT'
+														? 'tag'
+														: 'staff-tag'
+												}`}
+											>
+												{row.role}
+											</div>
+										</TDataCell>
+									</TRow>
+								))
+							)}
 						</TBody>
 					</table>
 				</div>

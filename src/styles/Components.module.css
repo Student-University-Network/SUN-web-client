@@ -23,6 +23,14 @@
 		@apply px-2 py-1 font-medium leading-tight text-green-700 bg-green-100
 		 rounded-full dark:bg-green-700 dark:text-green-100;
 	}
+	.admin-tag {
+		@apply tag text-red-700 bg-red-100
+		 rounded-full dark:bg-red-700 dark:text-red-100;
+	}
+	.staff-tag {
+		@apply tag text-blue-700 bg-blue-100
+		 rounded-full dark:bg-blue-700 dark:text-blue-100;
+	}
 	.input-field-unstyled > input {
 		@apply font-mono bg-white/80 rounded-none disabled:bg-transparent dark:bg-gray-700 dark:disabled:bg-transparent border-none focus:border outline-none my-1;
 	}

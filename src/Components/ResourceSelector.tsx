@@ -53,7 +53,7 @@ export default function ResourceSelector<T extends { [k: string]: any }>({
 						onClick={() => closePrompt()}
 					/>
 				</div>
-				<table>
+				<table className="w-full">
 					<THead>
 						<THeaderRowCell>
 							{columns.map((col) => (
@@ -62,32 +62,45 @@ export default function ResourceSelector<T extends { [k: string]: any }>({
 						</THeaderRowCell>
 					</THead>
 					<TBody className="overflow-y-auto">
-						{data.map((row, index) => (
-							<TRow
-								className={`cursor-pointer ${
-									selection[index]
-										? 'bg-primary-200 hover:bg-primary-200/50'
-										: ''
-								}`}
-								onClick={() => {
-									if (!mutiselect) {
-										const newSelection: {
-											[key: number]: boolean;
-										} = {};
-										newSelection[index] = !selection[index];
-										setSelection(newSelection);
-										return;
-									}
-									const newSelection = { ...selection };
-									newSelection[index] = !newSelection[index];
-									setSelection(newSelection);
-								}}
-							>
-								{columns.map((key) => (
-									<TDataCell>{row[key]}</TDataCell>
-								))}{' '}
+						{data.length === 0 ? (
+							<TRow>
+								<TDataCell
+									colSpan={columns.length}
+									className="text-center"
+								>
+									No Data present
+								</TDataCell>
 							</TRow>
-						))}
+						) : (
+							data.map((row, index) => (
+								<TRow
+									className={`cursor-pointer ${
+										selection[index]
+											? 'bg-primary-200 hover:bg-primary-200/50'
+											: ''
+									}`}
+									onClick={() => {
+										if (!mutiselect) {
+											const newSelection: {
+												[key: number]: boolean;
+											} = {};
+											newSelection[index] =
+												!selection[index];
+											setSelection(newSelection);
+											return;
+										}
+										const newSelection = { ...selection };
+										newSelection[index] =
+											!newSelection[index];
+										setSelection(newSelection);
+									}}
+								>
+									{columns.map((key) => (
+										<TDataCell>{row[key]}</TDataCell>
+									))}{' '}
+								</TRow>
+							))
+						)}
 					</TBody>
 				</table>
 				<div className="py-4 flex space-x-2">
