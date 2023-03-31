@@ -1,16 +1,17 @@
+/* eslint-disable react/require-default-props */
 import { InputHTMLAttributes, MutableRefObject } from 'react';
 
 interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
-	className: string;
-	label: string;
+	className?: string;
+	label?: string;
 }
 
 function InputField({ ...props }: InputFieldProps) {
 	const {
-		className,
+		className = '',
 		type,
 		name,
-		label,
+		label = '',
 		placeholder,
 		onChange,
 		readOnly,
@@ -32,7 +33,7 @@ function InputField({ ...props }: InputFieldProps) {
 				value={value}
 				id={name}
 				placeholder={placeholder}
-				className="input-field"
+				className={`input-field ${className}`}
 				onChange={onChange}
 				readOnly={readOnly}
 				onFocus={onFocus}

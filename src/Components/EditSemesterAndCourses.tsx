@@ -98,7 +98,6 @@ export default function EditSemestersAndCourses({
 							<TRow>
 								<TDataCell>
 									<InputField
-										className="border-none"
 										label=""
 										value={crs.courseName}
 										onChange={(e) => {
@@ -111,7 +110,6 @@ export default function EditSemestersAndCourses({
 								</TDataCell>
 								<TDataCell>
 									<InputField
-										className="border-none"
 										label=""
 										type="number"
 										min={1}
@@ -126,7 +124,6 @@ export default function EditSemestersAndCourses({
 								</TDataCell>
 								<TDataCell>
 									<InputField
-										className="border-none"
 										label=""
 										type="checkbox"
 										min={1}

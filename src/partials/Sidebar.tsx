@@ -75,14 +75,14 @@ export default function Sidebar() {
 					/>
 					<NavItem
 						routerPath={router.pathname}
-						hrefPath="/professors"
+						hrefPath="/users"
 						icon={
 							<UserGroupIcon
 								className="w-5 h-5"
 								strokeWidth={2}
 							/>
 						}
-						label="Professors"
+						label="Users"
 					/>
 					<NavItem
 						routerPath={router.pathname}

@@ -23,4 +23,10 @@
 		@apply px-2 py-1 font-medium leading-tight text-green-700 bg-green-100
 		 rounded-full dark:bg-green-700 dark:text-green-100;
 	}
+	.input-field-unstyled > input {
+		@apply font-mono bg-white/80 rounded-none disabled:bg-transparent dark:bg-gray-700 dark:disabled:bg-transparent border-none focus:border outline-none my-1;
+	}
+	.select-field {
+		@apply bg-white/80 border-none text-gray-900 font-mono rounded-none w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:disabled:bg-transparent dark:text-white;
+	}
 }

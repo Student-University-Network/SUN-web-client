@@ -109,8 +109,8 @@ export function ProgramProvider({ children }: Props) {
 
 	function getProgramDetails(
 		programId: string,
-		done: (data: any) => void,
-		error: (data: any) => void,
+		done: (data: any) => void = () => {},
+		error: (data: any) => void = () => {},
 	) {
 		programService
 			.getProgramDetails(programId)
@@ -124,8 +124,8 @@ export function ProgramProvider({ children }: Props) {
 	}
 
 	function getProgramsList(
-		done: (data: any) => void,
-		error: (data: any) => void,
+		done: (data: any) => void = () => {},
+		error: (data: any) => void = () => {},
 	) {
 		programService
 			.getProgramsList()
@@ -139,8 +139,8 @@ export function ProgramProvider({ children }: Props) {
 
 	function createProgram(
 		payload: any,
-		done: (data: any) => void,
-		error: (data: any) => void,
+		done: (data: any) => void = () => {},
+		error: (data: any) => void = () => {},
 	) {
 		programService
 			.createProgram(payload)
@@ -155,8 +155,8 @@ export function ProgramProvider({ children }: Props) {
 	function updateProgram(
 		programId: string,
 		payload: any,
-		done: (data: any) => void,
-		error: (data: any) => void,
+		done: (data: any) => void = () => {},
+		error: (data: any) => void = () => {},
 	) {
 		programService
 			.updateProgram(programId, payload)
