@@ -53,6 +53,17 @@ export default function Sidebar() {
 					/>
 					<NavItem
 						routerPath={router.pathname}
+						hrefPath="/users"
+						icon={
+							<UserGroupIcon
+								className="w-5 h-5"
+								strokeWidth={2}
+							/>
+						}
+						label="Users"
+					/>
+					<NavItem
+						routerPath={router.pathname}
 						hrefPath="/programs"
 						icon={
 							<AcademicCapIcon
@@ -72,17 +83,6 @@ export default function Sidebar() {
 							/>
 						}
 						label="Courses"
-					/>
-					<NavItem
-						routerPath={router.pathname}
-						hrefPath="/users"
-						icon={
-							<UserGroupIcon
-								className="w-5 h-5"
-								strokeWidth={2}
-							/>
-						}
-						label="Users"
 					/>
 					<NavItem
 						routerPath={router.pathname}

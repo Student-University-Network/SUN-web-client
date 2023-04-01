@@ -10,7 +10,10 @@ import { useEffect, useState } from 'react';
 import { ERROR, INFO, useAlert, WARNING } from 'src/Components/Alert';
 import { Button, IconButton } from 'src/Components/Button';
 import InputField from 'src/Components/InputField';
-import ResourceSelector from 'src/Components/ResourceSelector';
+import ResourceSelector, {
+	defaultState,
+	ResourceSelectorStateType,
+} from 'src/Components/ResourceSelector';
 import {
 	THead,
 	THeaderRowCell,
@@ -26,17 +29,6 @@ import Container from 'src/partials/Container';
 import Navbar from 'src/partials/Navbar';
 import Sidebar from 'src/partials/Sidebar';
 
-function defaultState() {
-	return {
-		show: false,
-		data: [{}],
-		column: [''],
-		label: '',
-		multiSelect: false,
-		savePrompt: () => {},
-	};
-}
-
 export default function NewUsers() {
 	const { programsList, getProgramsList } = useProgram();
 	const { createBatchUsers } = useAdmin();
@@ -47,15 +39,8 @@ export default function NewUsers() {
 
 	const [usernameGenerate, setUsernamegGenerate] = useState(false);
 	const [passwordGenerate, setPasswordGenerate] = useState(false);
-	const [resourcePicker, setResourcePicker] = useState<{
-		show: boolean;
-		data: Array<object>;
-		column: Array<string>;
-		label: string;
-		multiSelect: boolean;
-		// eslint-disable-next-line @typescript-eslint/ban-types
-		savePrompt: Function;
-	}>(defaultState());
+	const [resourcePicker, setResourcePicker] =
+		useState<ResourceSelectorStateType>(defaultState());
 
 	useEffect(() => {
 		if (programsList.length === 0) {

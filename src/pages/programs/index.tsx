@@ -16,13 +16,12 @@ import {
 	TDataCell,
 } from 'src/Components/TableComponents';
 import { useProgram } from 'src/context/ProgramContext';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { ERROR, useAlert } from 'src/Components/Alert';
 import { useUser } from 'src/context/UserContext';
 import {
 	AcademicCapIcon,
 	ChartBarIcon,
-	MagnifyingGlassIcon,
 	PlusCircleIcon,
 } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/router';
@@ -32,6 +31,8 @@ export default function Programs() {
 	const { programsList, getProgramsList } = useProgram();
 	const { showAlert } = useAlert();
 	const { userId } = useUser();
+	const [searchTerm1, setSearchTerm1] = useState('');
+	const [searchTerm2, setSearchTerm2] = useState('');
 
 	useEffect(() => {
 		if (userId !== '') {
@@ -107,30 +108,26 @@ export default function Programs() {
 						className=""
 						label="Filter by Name"
 						placeholder="Program Name"
+						value={searchTerm1}
+						onChange={(e) => setSearchTerm1(e.target.value)}
 					/>
 					<div>
-						<label
-							htmlFor="programTags"
-							className="block text-base font-medium text-primary-800 dark:text-primary-500"
-						>
-							Filter by Tag
-						</label>
-						<select id="programTags" className="input-field">
-							<option selected>Choose a Tag</option>
-							<option value="CS">CS</option>
-							<option value="IT">IT</option>
-							<option value="EXTC">EXTC</option>
-						</select>
+						<InputField
+							className=""
+							label="Filter by TAG"
+							placeholder="Tag"
+							value={searchTerm2}
+							onChange={(e) => setSearchTerm2(e.target.value)}
+						/>
 					</div>
-					<div className="flex flex-col justify-end">
+					<div className="flex items-end">
 						<Button
+							className="btn-outline"
 							onClick={() => {
-								console.log('Search');
+								setSearchTerm1('');
+								setSearchTerm2('');
 							}}
-							label="Search"
-							trailingIcon={
-								<MagnifyingGlassIcon className="inline-flex w-6 h-6" />
-							}
+							label="Clear filter"
 						/>
 					</div>
 				</div>
@@ -155,41 +152,50 @@ export default function Programs() {
 									</TDataCell>
 								</TRow>
 							) : null}
-							{programsList.map((program) => (
-								<TRow
-									className="cursor-pointer"
-									key={program.programId}
-									onClick={() => {
-										router.push({
-											pathname: '/programs/view',
-											query: {
-												id: program.programId,
-											},
-										});
-									}}
-								>
-									<TDataCell className="font-semibold">
-										{program.programName}
-									</TDataCell>
-									<TDataCell>
-										{new Date(
-											program.startYear,
-										).getFullYear()}
-										-
-										{new Date(
-											program.endYear,
-										).getFullYear()}
-									</TDataCell>
-									<TDataCell>
-										{program.duration / 2} years
-									</TDataCell>
-									<TDataCell>
-										<span className="tag">
-											{program.tag}
-										</span>
-									</TDataCell>
-								</TRow>
-							))}
+							{programsList.map((program) =>
+								program.programName
+									.toLowerCase()
+									.indexOf(searchTerm1.toLowerCase()) !==
+									-1 &&
+								program.tag
+									.toLowerCase()
+									.indexOf(searchTerm2.toLowerCase()) !==
+									-1 ? (
+									<TRow
+										className="cursor-pointer"
+										key={program.programId}
+										onClick={() => {
+											router.push({
+												pathname: '/programs/view',
+												query: {
+													id: program.programId,
+												},
+											});
+										}}
+									>
+										<TDataCell className="font-semibold">
+											{program.programName}
+										</TDataCell>
+										<TDataCell>
+											{new Date(
+												program.startYear,
+											).getFullYear()}
+											-
+											{new Date(
+												program.endYear,
+											).getFullYear()}
+										</TDataCell>
+										<TDataCell>
+											{program.duration / 2} years
+										</TDataCell>
+										<TDataCell>
+											<span className="tag">
+												{program.tag}
+											</span>
+										</TDataCell>
+									</TRow>
+								) : null,
+							)}
 						</TBody>
 					</table>
 				</div>

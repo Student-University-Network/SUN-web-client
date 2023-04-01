@@ -51,7 +51,7 @@ export default function NewProgram() {
 	const [programName, setProgramName] = useState('');
 	const [startYear, setStartYear] = useState('');
 	const [endYear, setEndYear] = useState('');
-	const [duration, setDuration] = useState(0);
+	const [duration, setDuration] = useState(1);
 	const [tag, setTag] = useState('');
 	const [currentSemIndex, setCurrentSemIndex] = useState(0);
 	const [semesters, setSemesters] = useState<Array<Semester>>([
@@ -86,12 +86,28 @@ export default function NewProgram() {
 	};
 
 	const onSubmit = () => {
+		if (programName === '' || duration === 0 || tag === '') {
+			showAlert(WARNING, 'Please enter all required', true);
+			return;
+		}
 		if (startYear === '') {
 			showAlert(WARNING, 'Please enter start year', true);
 			return;
 		}
 		if (endYear === '') {
 			showAlert(WARNING, 'Please enter end year', true);
+			return;
+		}
+		if (batches.length === 0) {
+			showAlert(WARNING, 'Please add atleast one batch', true);
+			return;
+		}
+		if (duration !== semesters.length) {
+			showAlert(
+				WARNING,
+				`For program of duration ${duration}, ${semesters.length} semester/s are provided`,
+				true,
+			);
 			return;
 		}
 

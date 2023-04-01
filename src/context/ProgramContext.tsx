@@ -29,6 +29,7 @@ export interface Semester {
 export interface Batch {
 	id: string;
 	batchName: string;
+	students: number;
 }
 
 export interface Program {

@@ -20,6 +20,7 @@ import {
 	TDataCell,
 	TRow,
 } from 'src/Components/TableComponents';
+import { getFormattedDate } from 'src/Components/Utils';
 import { Program, Semester, useProgram } from 'src/context/ProgramContext';
 import Container from 'src/partials/Container';
 import Navbar from 'src/partials/Navbar';
@@ -78,21 +79,6 @@ export default function ViewProgram() {
 			setProgramData(program);
 		}
 	}, [program]);
-
-	function getFormattedDate(date: string) {
-		const today = new Date(date);
-		const yyyy = today.getFullYear();
-		const m = today.getMonth() + 1;
-		const d = today.getDate();
-		let mm = '';
-		let dd = '';
-		if (d < 10) dd = `0${d}`;
-		else dd = `${d}`;
-		if (m < 10) mm = `0${m}`;
-		else mm = `${m}`;
-
-		return `${yyyy}-${mm}-${dd}`;
-	}
 
 	function submitUpdate(
 		programId: string,
@@ -365,7 +351,9 @@ export default function ViewProgram() {
 										batch.batchName
 									)}
 								</div>
-								<div className="">Total students: 60</div>
+								<div className="">
+									Total students: {batch.students}
+								</div>
 							</div>
 						))}
 

@@ -51,3 +51,18 @@ export function parseCSV(content: string, delimeter: string) {
 
 	return dataObject;
 }
+
+export function getFormattedDate(date: string) {
+	const today = new Date(date);
+	const yyyy = today.getFullYear();
+	const m = today.getMonth() + 1;
+	const d = today.getDate();
+	let mm = '';
+	let dd = '';
+	if (d < 10) dd = `0${d}`;
+	else dd = `${d}`;
+	if (m < 10) mm = `0${m}`;
+	else mm = `${m}`;
+
+	return `${yyyy}-${mm}-${dd}`;
+}

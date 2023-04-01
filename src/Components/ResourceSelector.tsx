@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable react/require-default-props */
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
@@ -20,6 +21,27 @@ interface ResourceSelectorProps<T extends { [k: string]: any }> {
 	columns: Array<string>;
 	label: string;
 	mutiselect?: boolean;
+}
+
+export interface ResourceSelectorStateType {
+	show: boolean;
+	data: Array<object>;
+	column: Array<string>;
+	label: string;
+	multiSelect: boolean;
+	// eslint-disable-next-line @typescript-eslint/ban-types
+	savePrompt: Function;
+}
+
+export function defaultState() {
+	return {
+		show: false,
+		data: [{}],
+		column: [''],
+		label: '',
+		multiSelect: false,
+		savePrompt: () => {},
+	};
 }
 
 export default function ResourceSelector<T extends { [k: string]: any }>({
@@ -57,7 +79,7 @@ export default function ResourceSelector<T extends { [k: string]: any }>({
 					<THead>
 						<THeaderRowCell>
 							{columns.map((col) => (
-								<THeadCell>{col}</THeadCell>
+								<THeadCell key={col}>{col}</THeadCell>
 							))}
 						</THeaderRowCell>
 					</THead>
@@ -74,6 +96,7 @@ export default function ResourceSelector<T extends { [k: string]: any }>({
 						) : (
 							data.map((row, index) => (
 								<TRow
+									key={`row${index}`}
 									className={`cursor-pointer ${
 										selection[index]
 											? 'bg-primary-200 hover:bg-primary-200/50'

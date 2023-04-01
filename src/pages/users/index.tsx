@@ -21,14 +21,17 @@ import {
 	TRow,
 } from 'src/Components/TableComponents';
 import { useAdmin } from 'src/context/AdminContext';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { ERROR, useAlert } from 'src/Components/Alert';
 import { useUser } from 'src/context/UserContext';
+import { useRouter } from 'next/router';
 
 export default function Users() {
+	const router = useRouter();
 	const { usersList, getUsersList } = useAdmin();
 	const { userId } = useUser();
 	const { showAlert } = useAlert();
+	const [searchTerm, setSearchTerm] = useState('');
 
 	useEffect(() => {
 		if (userId !== '') {
@@ -104,16 +107,14 @@ export default function Users() {
 						className=""
 						label="Filter by username"
 						placeholder="User Name"
+						value={searchTerm}
+						onChange={(e) => setSearchTerm(e.target.value)}
 					/>
 					<div className="flex flex-col justify-end">
 						<Button
-							onClick={() => {
-								console.log('Search');
-							}}
-							label="Search"
-							trailingIcon={
-								<MagnifyingGlassIcon className="inline-flex w-6 h-6" />
-							}
+							className="btn-outline"
+							onClick={() => setSearchTerm('')}
+							label="Clear filter"
 						/>
 					</div>
 				</div>
@@ -137,28 +138,50 @@ export default function Users() {
 									</TDataCell>
 								</TRow>
 							) : (
-								usersList.map((row, rowIndex) => (
-									<TRow>
-										<TDataCell>{row.username}</TDataCell>
-										<TDataCell>
-											{row.firstName} {row.lastName}
-										</TDataCell>
-										<TDataCell>
-											<div
-												className={`w-fit ${
-													// eslint-disable-next-line no-nested-ternary
-													row.role === 'ADMIN'
-														? 'admin-tag'
-														: row.role === 'STUDENT'
-														? 'tag'
-														: 'staff-tag'
-												}`}
-											>
-												{row.role}
-											</div>
-										</TDataCell>
-									</TRow>
-								))
+								usersList.map((row, rowIndex) =>
+									row.username
+										.toLowerCase()
+										.indexOf(searchTerm.toLowerCase()) !==
+									-1 ? (
+										<TRow
+											key={row.id}
+											className="cursor-pointer"
+											role="cell"
+											onClick={() => {
+												router.push({
+													pathname: '/users/view',
+													query: {
+														userId: usersList[
+															rowIndex
+														].id,
+													},
+												});
+											}}
+										>
+											<TDataCell>
+												{row.username}
+											</TDataCell>
+											<TDataCell>
+												{row.firstName} {row.lastName}
+											</TDataCell>
+											<TDataCell>
+												<div
+													className={`w-fit ${
+														// eslint-disable-next-line no-nested-ternary
+														row.role === 'ADMIN'
+															? 'admin-tag'
+															: row.role ===
+															  'STUDENT'
+															? 'tag'
+															: 'staff-tag'
+													}`}
+												>
+													{row.role}
+												</div>
+											</TDataCell>
+										</TRow>
+									) : null,
+								)
 							)}
 						</TBody>
 					</table>

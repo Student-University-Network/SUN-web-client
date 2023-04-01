@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios';
 import { createContext, useContext, useState } from 'react';
 import adminService from 'src/api/adminService';
 import { EmptyFunction } from 'src/Components/Utils';
@@ -21,6 +22,24 @@ export interface UserListItem {
 	lastName: string;
 }
 
+export interface UserDetailType {
+	id: string;
+	role: string;
+	profile: {
+		id: string;
+		gender: string;
+		firstName: string;
+		middleName?: string;
+		lastName: string;
+		dateOfBirth: Date | null;
+	};
+	academicDetails?: {
+		rollNo: number | null;
+		batchId: string | null;
+		programId: string | null;
+	};
+}
+
 type AdminContextType = {
 	usersList: Array<UserListItem>;
 	createBatchUsers: (
@@ -32,12 +51,18 @@ type AdminContextType = {
 		done: (data: any) => void,
 		error: (data: any) => void,
 	) => void;
+	getOtherUserDetails: (
+		userId: string,
+		done: (data: UserDetailType) => void,
+		error: (data: string) => void,
+	) => void;
 };
 
 const AdminContext = createContext<AdminContextType>({
 	usersList: [],
 	createBatchUsers: () => {},
 	getUsersList: () => {},
+	getOtherUserDetails: () => {},
 });
 
 type Props = {
@@ -74,11 +99,23 @@ export function AdminProvider({ children }: Props) {
 			.catch((err) => error(null));
 	}
 
+	function getOtherUserDetails(
+		userId: string,
+		done: (data: UserDetailType) => void,
+		error: (data: string) => void,
+	) {
+		adminService
+			.getOtherUserDetail(userId)
+			.then((res) => done(res.data.data))
+			.catch((err: AxiosError) => error(err.message));
+	}
+
 	// eslint-disable-next-line react/jsx-no-constructed-context-values
 	const value = {
 		usersList,
 		createBatchUsers,
 		getUsersList,
+		getOtherUserDetails,
 	};
 
 	return (
