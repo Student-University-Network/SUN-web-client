@@ -3,7 +3,12 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import authService from 'src/api/authService';
 
 type User = {
+	userId: string;
+	firstName: string;
+	lastName: string;
 	username: string;
+	role: string;
+	programId: string;
 };
 
 type AuthContextType = {
@@ -42,9 +47,13 @@ export function AuthProvider({ children }: Props) {
 			.refresh()
 			.then((res) => {
 				authService.setToken(res.data.accessToken);
-				// TODO: when refresh response has username then set it here
 				setUser({
-					username: 'tempuser',
+					userId: res.data.id,
+					username: res.data.username,
+					firstName: res.data.firstName,
+					lastName: res.data.lastName,
+					role: res.data.role,
+					programId: res.data.programId,
 				});
 				if (router.pathname === '/login' || router.pathname === '') {
 					router.replace('/dashboard');
@@ -70,16 +79,21 @@ export function AuthProvider({ children }: Props) {
 				password,
 			})
 			.then((res) => {
-				authService.setToken(res.data.accessToken);
+				const { data } = res.data;
+				authService.setToken(data.accessToken);
 				setUser({
-					username: res.data.username,
+					userId: data.id,
+					username: data.username,
+					firstName: data.firstName,
+					lastName: data.lastName,
+					role: data.role,
+					programId: data.programId,
 				});
 				done();
 			})
 			.catch((err: any) => {
 				error();
 			});
-		// setUser({ username: 'Manas' });
 	};
 
 	const logout = () => {

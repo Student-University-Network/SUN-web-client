@@ -8,6 +8,7 @@ import { useAuth } from 'src/context/AuthContext';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
+import { ERROR, useAlert } from 'src/Components/Alert';
 
 interface IFormInput {
 	username: string;
@@ -19,6 +20,7 @@ interface IFormInput {
 export default function Login() {
 	const router = useRouter();
 	const { login } = useAuth();
+	const { showAlert } = useAlert();
 
 	const [isBtnActive, setIsBtnActive] = useState(true);
 	const [showPassword, setShowPassword] = useState(false);
@@ -46,7 +48,7 @@ export default function Login() {
 			},
 			() => {
 				setIsBtnActive(true);
-				alert('Incorrect Username or password');
+				showAlert(ERROR, 'Username or password incorrect', true);
 			},
 		);
 	};

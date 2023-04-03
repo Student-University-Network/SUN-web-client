@@ -8,6 +8,7 @@ import {
 	UserGroupIcon,
 	BellAlertIcon,
 } from '@heroicons/react/24/outline';
+import { useAuth } from 'src/context/AuthContext';
 
 type NavItemProps = {
 	routerPath: string;
@@ -40,6 +41,7 @@ function NavItem({ hrefPath, routerPath, icon, label }: NavItemProps) {
 
 export default function Sidebar() {
 	const router = useRouter();
+	const { user } = useAuth();
 
 	return (
 		<div className="fixed bottom-0 z-10 lg:left-0 lg:top-4 lg:h-full lg:w-64 lg:mt-16 flex flex-col w-full overflow-y-hidden text-gray-900 transition-all duration-300 bg-white border-none shadow-md h-14 dark:bg-gray-900">
@@ -51,17 +53,19 @@ export default function Sidebar() {
 						icon={<HomeIcon className="w-5 h-5" strokeWidth={2} />}
 						label="Dashboard"
 					/>
-					<NavItem
-						routerPath={router.pathname}
-						hrefPath="/users"
-						icon={
-							<UserGroupIcon
-								className="w-5 h-5"
-								strokeWidth={2}
-							/>
-						}
-						label="Users"
-					/>
+					{user?.role === 'ADMIN' ? (
+						<NavItem
+							routerPath={router.pathname}
+							hrefPath="/users"
+							icon={
+								<UserGroupIcon
+									className="w-5 h-5"
+									strokeWidth={2}
+								/>
+							}
+							label="Users"
+						/>
+					) : null}
 					<NavItem
 						routerPath={router.pathname}
 						hrefPath="/programs"

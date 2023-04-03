@@ -1,6 +1,8 @@
 import { AxiosError } from 'axios';
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import programService from 'src/api/programService';
+import { EmptyFunction } from 'src/Components/Utils';
+import { useAuth } from './AuthContext';
 
 export interface ProgramListItem {
 	programId: string;
@@ -93,6 +95,7 @@ type Props = {
 };
 
 export function ProgramProvider({ children }: Props) {
+	const { user } = useAuth();
 	const [program, setProgram] = useState<Program>({
 		programId: '',
 		programName: '',
@@ -116,8 +119,7 @@ export function ProgramProvider({ children }: Props) {
 		programService
 			.getProgramDetails(programId)
 			.then((res) => {
-				setProgram(res.data.data);
-				done(null);
+				done(res.data.data);
 			})
 			.catch((err: AxiosError) => {
 				error(null);
@@ -128,6 +130,7 @@ export function ProgramProvider({ children }: Props) {
 		done: (data: any) => void = () => {},
 		error: (data: any) => void = () => {},
 	) {
+		if (user?.role !== 'ADMIN') return;
 		programService
 			.getProgramsList()
 			.then((res) => {
@@ -143,10 +146,12 @@ export function ProgramProvider({ children }: Props) {
 		done: (data: any) => void = () => {},
 		error: (data: any) => void = () => {},
 	) {
+		if (user?.role !== 'ADMIN') return;
 		programService
 			.createProgram(payload)
 			.then((res) => {
 				const { data } = res.data;
+				console.log(data, programsList, [...programsList, data]);
 				setProgramsList([...programsList, data]);
 				done(null);
 			})
@@ -159,6 +164,7 @@ export function ProgramProvider({ children }: Props) {
 		done: (data: any) => void = () => {},
 		error: (data: any) => void = () => {},
 	) {
+		if (user?.role !== 'ADMIN') return;
 		programService
 			.updateProgram(programId, payload)
 			.then((res) => {
@@ -169,6 +175,18 @@ export function ProgramProvider({ children }: Props) {
 				error(null);
 			});
 	}
+
+	useEffect(() => {
+		if (user?.role === 'STUDENT') {
+			getProgramDetails(
+				user.programId,
+				(data: Program) => {
+					setProgram(data);
+				},
+				EmptyFunction,
+			);
+		}
+	}, [user]);
 
 	// eslint-disable-next-line react/jsx-no-constructed-context-values
 	const value = {

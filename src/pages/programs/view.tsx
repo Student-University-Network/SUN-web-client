@@ -10,6 +10,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useAlert, ERROR, INFO } from 'src/Components/Alert';
 import { Button, IconButton } from 'src/Components/Button';
+import EditBatchDetails from 'src/Components/EditBatchDetails';
 import EditSemestersAndCourses from 'src/Components/EditSemesterAndCourses';
 import InputField from 'src/Components/InputField';
 import {
@@ -21,7 +22,12 @@ import {
 	TRow,
 } from 'src/Components/TableComponents';
 import { getFormattedDate } from 'src/Components/Utils';
-import { Program, Semester, useProgram } from 'src/context/ProgramContext';
+import {
+	Batch,
+	Program,
+	Semester,
+	useProgram,
+} from 'src/context/ProgramContext';
 import Container from 'src/partials/Container';
 import Navbar from 'src/partials/Navbar';
 import Sidebar from 'src/partials/Sidebar';
@@ -39,8 +45,13 @@ export default function ViewProgram() {
 	const { showAlert } = useAlert();
 
 	const { id } = router.query;
-	const { getProgramDetails, program, updateProgram } = useProgram();
-	const [programData, setProgramData] = useState<Program>(program);
+	const {
+		getProgramDetails,
+		program: mainProgram,
+		updateProgram,
+	} = useProgram();
+	const [currentProgram, setCurrentProgram] = useState<Program>(mainProgram);
+	const [programData, setProgramData] = useState<Program>(currentProgram);
 	const [editProgram, setEditProgram] = useState(false);
 	const [editBatches, setEditBatches] = useState(false);
 	const [editSemesters, setEditSemesters] = useState(false);
@@ -50,22 +61,23 @@ export default function ViewProgram() {
 		order: 0,
 		courses: [],
 	});
+	const [inEditBatch, setInEditBatch] = useState<Batch>({
+		id: '',
+		batchName: '',
+		students: 0,
+	});
 
 	useEffect(() => {
 		if (!router.isReady) return;
 		if (id) {
 			if (id instanceof Array<string>) {
-				getProgramDetails(
-					id[0],
-					() => {},
-					() => {
-						showAlert(ERROR, 'Failed to fetch details', false);
-					},
-				);
+				// pass
 			} else {
 				getProgramDetails(
 					id,
-					() => {},
+					(data: Program) => {
+						setCurrentProgram(data);
+					},
 					() => {
 						showAlert(ERROR, 'Failed to fetch details', false);
 					},
@@ -75,10 +87,10 @@ export default function ViewProgram() {
 	}, [router.isReady]);
 
 	useEffect(() => {
-		if (program.programId !== '') {
-			setProgramData(program);
+		if (currentProgram.programId !== '') {
+			setProgramData(currentProgram);
 		}
-	}, [program]);
+	}, [currentProgram]);
 
 	function submitUpdate(
 		programId: string,
@@ -91,7 +103,7 @@ export default function ViewProgram() {
 			payload,
 			() => {
 				showAlert(INFO, `${msg} updated successfully`, true);
-				setProgramData(program);
+				setProgramData(currentProgram);
 				hide();
 			},
 			() => {
@@ -114,15 +126,15 @@ export default function ViewProgram() {
 		);
 	}
 
-	function submitBatches() {
-		const payload = {
-			programId: programData.programId,
-			batches: programData.batches,
-		};
-		submitUpdate(programData.programId, payload, 'batches', () =>
-			setEditBatches(false),
-		);
-	}
+	// function submitBatches() {
+	// 	const payload = {
+	// 		programId: programData.programId,
+	// 		batches: programData.batches,
+	// 	};
+	// 	submitUpdate(programData.programId, payload, 'batches', () =>
+	// 		setEditBatches(false),
+	// 	);
+	// }
 
 	function submitSemester(updated: Semester) {
 		const foundIndex = programData.semesters.findIndex(
@@ -169,6 +181,28 @@ export default function ViewProgram() {
 					closePrompt={() => setEditSemesters(false)}
 				/>
 			) : null}
+			{editBatches ? (
+				<EditBatchDetails
+					batchData={inEditBatch}
+					saveBatch={() => {
+						setEditBatches(false);
+						getProgramDetails(
+							programData.programId,
+							(data: Program) => {
+								setCurrentProgram(data);
+							},
+							() => {
+								showAlert(
+									ERROR,
+									'Failed to fetch updated details',
+									false,
+								);
+							},
+						);
+					}}
+					closePrompt={() => setEditBatches(false)}
+				/>
+			) : null}
 			<Container>
 				<div className="ml-1 sm:ml-3 pb-4 h-full">
 					<form className="flex flex-col justify-center px-3 overflow-hidden">
@@ -199,7 +233,7 @@ export default function ViewProgram() {
 									}
 									label={editProgram ? 'Cancel' : 'Edit'}
 									onClick={() => {
-										setProgramData(program);
+										setProgramData(currentProgram);
 										setEditProgram(!editProgram);
 									}}
 								/>
@@ -306,54 +340,31 @@ export default function ViewProgram() {
 							<div className="text-xl font-medium text-primary-800 dark:text-primary-500">
 								Batches
 							</div>
-							<div className="flex space-x-2">
-								{editBatches ? (
-									<Button
-										className="text-base p-2"
-										leadingIcon={
-											<PencilIcon className="w-5 h-5" />
-										}
-										label="Save"
-										onClick={() => submitBatches()}
-									/>
-								) : null}
-								<Button
-									className="text-base p-2"
-									leadingIcon={
-										<PencilIcon className="w-5 h-5" />
-									}
-									label={editBatches ? 'Cancel' : 'Edit'}
-									onClick={() => {
-										setProgramData(program);
-										setEditBatches(!editBatches);
-									}}
-								/>
-							</div>
 						</div>
 
 						{programData.batches.map((batch, bchIndex) => (
-							<div key={batch.id} className="shadow rounded p-4">
-								<div className="text-xl my-2">
-									{editBatches ? (
-										<InputField
-											label=""
-											className=""
-											value={batch.batchName}
-											onChange={(e) => {
-												const data = { ...programData };
-												data.batches[
-													bchIndex
-												].batchName = e.target.value;
-												setProgramData(data);
-											}}
-										/>
-									) : (
-										batch.batchName
-									)}
+							<div
+								key={batch.id}
+								className="shadow rounded p-4 flex justify-between"
+							>
+								<div>
+									<div className="text-xl my-2">
+										{batch.batchName}
+									</div>
+									<div className="">
+										Total students: {batch.students}
+									</div>
 								</div>
-								<div className="">
-									Total students: {batch.students}
-								</div>
+								<IconButton
+									className="text-base btn-outline px-2"
+									leadingIcon={
+										<PencilIcon className="w-5 h-5" />
+									}
+									onClick={() => {
+										setInEditBatch(batch);
+										setEditBatches(!editBatches);
+									}}
+								/>
 							</div>
 						))}
 

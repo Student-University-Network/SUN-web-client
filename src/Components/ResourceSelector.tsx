@@ -64,7 +64,7 @@ export default function ResourceSelector<T extends { [k: string]: any }>({
 			onClick={() => closePrompt()}
 		>
 			<div
-				className="rounded-t-xl max-h-[80%] sm:rounded-xl py-4 px-6 bg-white dark:bg-gray-900 shadow space-y-4 min-w-[40%]"
+				className="rounded-t-xl overflow-y-auto max-h-[90%] sm:rounded-xl py-4 px-6 bg-white dark:bg-gray-900 shadow space-y-4 min-w-[40%]"
 				role="banner"
 				onClick={(e) => e.stopPropagation()}
 			>

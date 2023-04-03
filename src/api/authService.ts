@@ -17,12 +17,25 @@ interface LoginInput {
 interface LoginResponse {
 	status: string;
 	message: string;
-	username: string;
-	accessToken: string;
+	data: {
+		accessToken: string;
+		firstName: string;
+		lastName: string;
+		username: string;
+		id: string;
+		role: string;
+		programId: string;
+	};
 }
 
 interface RefreshResponse {
 	accessToken: string;
+	firstName: string;
+	lastName: string;
+	username: string;
+	id: string;
+	role: string;
+	programId: string;
 }
 
 class AuthService {

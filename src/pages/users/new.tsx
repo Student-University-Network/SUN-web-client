@@ -550,7 +550,7 @@ export default function NewUsers() {
 														strokeWidth={2}
 													/>
 												}
-												label="New Batch"
+												label="New User"
 												onClick={() =>
 													setNewUsers([
 														...newUsersData,
