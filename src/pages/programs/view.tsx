@@ -22,12 +22,14 @@ import {
 	TRow,
 } from 'src/Components/TableComponents';
 import { getFormattedDate } from 'src/Components/Utils';
+import { useAuth } from 'src/context/AuthContext';
 import {
 	Batch,
 	Program,
 	Semester,
 	useProgram,
 } from 'src/context/ProgramContext';
+import { useUser } from 'src/context/UserContext';
 import Container from 'src/partials/Container';
 import Navbar from 'src/partials/Navbar';
 import Sidebar from 'src/partials/Sidebar';
@@ -43,6 +45,8 @@ function CourseBadge({ label }: { label: string }) {
 export default function ViewProgram() {
 	const router = useRouter();
 	const { showAlert } = useAlert();
+	const { userId } = useUser();
+	const { user } = useAuth();
 
 	const { id } = router.query;
 	const {
@@ -66,6 +70,15 @@ export default function ViewProgram() {
 		batchName: '',
 		students: 0,
 	});
+
+	useEffect(() => {
+		if (
+			userId !== '' &&
+			['STUDENT', 'FACULTY', 'STAFF'].includes(user?.role || '')
+		) {
+			router.replace('/dashboard');
+		}
+	}, [userId]);
 
 	useEffect(() => {
 		if (!router.isReady) return;
@@ -125,16 +138,6 @@ export default function ViewProgram() {
 			setEditProgram(false),
 		);
 	}
-
-	// function submitBatches() {
-	// 	const payload = {
-	// 		programId: programData.programId,
-	// 		batches: programData.batches,
-	// 	};
-	// 	submitUpdate(programData.programId, payload, 'batches', () =>
-	// 		setEditBatches(false),
-	// 	);
-	// }
 
 	function submitSemester(updated: Semester) {
 		const foundIndex = programData.semesters.findIndex(

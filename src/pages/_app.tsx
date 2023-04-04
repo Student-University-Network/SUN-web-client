@@ -7,6 +7,7 @@ import LoadingScreen from 'src/partials/LoadingScreen';
 import { Alert } from 'src/Components/Alert';
 import { ProgramProvider } from 'src/context/ProgramContext';
 import { AdminProvider } from 'src/context/AdminContext';
+import { FacultyProvider } from 'src/context/FacultyContext';
 import { GlobalContextProvider } from '../context/store';
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -16,15 +17,17 @@ export default function App({ Component, pageProps }: AppProps) {
 				<UserProvider>
 					<ProgramProvider>
 						<AdminProvider>
-							<Alert>
-								<LoadingScreen />
-								<ThemeProvider
-									attribute="class"
-									enableSystem={false}
-								>
-									<Component {...pageProps} />
-								</ThemeProvider>
-							</Alert>
+							<FacultyProvider>
+								<Alert>
+									<LoadingScreen />
+									<ThemeProvider
+										attribute="class"
+										enableSystem={false}
+									>
+										<Component {...pageProps} />
+									</ThemeProvider>
+								</Alert>
+							</FacultyProvider>
 						</AdminProvider>
 					</ProgramProvider>
 				</UserProvider>

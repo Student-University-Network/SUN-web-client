@@ -44,6 +44,7 @@ export interface Program {
 	batches: Array<Batch>;
 	currentSemester: number;
 	semesters: Array<Semester>;
+	batchId: string;
 }
 
 type ProgramContextType = {
@@ -82,6 +83,7 @@ const ProgramContext = createContext<ProgramContextType>({
 		currentSemester: 0,
 		semesters: [],
 		batches: [],
+		batchId: '',
 	},
 	programsList: [],
 	getProgramDetails: () => {},
@@ -106,6 +108,7 @@ export function ProgramProvider({ children }: Props) {
 		currentSemester: 0,
 		semesters: [],
 		batches: [],
+		batchId: '',
 	});
 	const [programsList, setProgramsList] = useState<Array<ProgramListItem>>(
 		[],
@@ -151,7 +154,6 @@ export function ProgramProvider({ children }: Props) {
 			.createProgram(payload)
 			.then((res) => {
 				const { data } = res.data;
-				console.log(data, programsList, [...programsList, data]);
 				setProgramsList([...programsList, data]);
 				done(null);
 			})
@@ -168,7 +170,8 @@ export function ProgramProvider({ children }: Props) {
 		programService
 			.updateProgram(programId, payload)
 			.then((res) => {
-				setProgram(res.data.data);
+				// setProgram(res.data.data);
+				// setProgramsList([...programsList, res.data.data]);
 				done(null);
 			})
 			.catch((err: AxiosError) => {

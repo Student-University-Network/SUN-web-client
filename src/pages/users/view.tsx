@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { ERROR, useAlert } from 'src/Components/Alert';
 import { EmptyFunction } from 'src/Components/Utils';
 import { useAdmin, UserDetailType } from 'src/context/AdminContext';
+import { useAuth } from 'src/context/AuthContext';
 import { useProgram } from 'src/context/ProgramContext';
 import Container from 'src/partials/Container';
 import Navbar from 'src/partials/Navbar';
@@ -16,6 +17,7 @@ export default function ViewUserDetails() {
 	const { showAlert } = useAlert();
 	const { program, getProgramDetails } = useProgram();
 	const { userId } = router.query;
+	const { user } = useAuth();
 
 	const [profileData, setProfileData] = useState({
 		id: '',
@@ -49,6 +51,15 @@ export default function ViewUserDetails() {
 			batchName: data.academicDetails?.batchName || '',
 		});
 	}
+
+	useEffect(() => {
+		if (
+			user?.userId !== '' &&
+			['STUDENT', 'FACULTY', 'STAFF'].includes(user?.role || '')
+		) {
+			router.replace('/dashboard');
+		}
+	}, [user]);
 
 	useEffect(() => {
 		if (academicDetails.programId !== '') {

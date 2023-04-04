@@ -3,11 +3,19 @@ import Sidebar from 'src/partials/Sidebar';
 import Navbar from 'src/partials/Navbar';
 import Head from 'next/head';
 import Container from 'src/partials/Container';
-import { AcademicCapIcon, BookOpenIcon } from '@heroicons/react/24/outline';
+import {
+	AcademicCapIcon,
+	BookOpenIcon,
+	CalendarDaysIcon,
+} from '@heroicons/react/24/outline';
 import { useAuth } from 'src/context/AuthContext';
+import { useFaculty } from 'src/context/FacultyContext';
+import { useProgram } from 'src/context/ProgramContext';
 
 export default function Dashboard() {
 	const { user } = useAuth();
+	const { coursesList } = useFaculty();
+	const { program } = useProgram();
 
 	return (
 		<>
@@ -33,25 +41,42 @@ export default function Dashboard() {
 							{user?.firstName || 'Unknown'} {user?.lastName}
 						</div>
 						<div className="flex space-x-2 items-center">
-							<div className="admin-tag text-sm">
+							<div
+								className={`${
+									user?.role === 'ADMIN'
+										? 'admin-tag'
+										: user?.role === 'FACULTY'
+										? 'staff-tag'
+										: 'tag'
+								} text-sm`}
+							>
 								{user?.role || 'STUDENT'}
 							</div>
 						</div>
 						{user?.role === 'STUDENT' ? (
-							<div className="flex space-x-2 items-center">
-								<AcademicCapIcon
-									className="w-5 h-5 my-2 mr-2"
-									strokeWidth={2}
-								/>
-								BEIT2
-							</div>
+							<>
+								<div className="flex space-x-2 mt-2 items-center">
+									<AcademicCapIcon
+										className="w-5 h-5 my-2 mr-2"
+										strokeWidth={2}
+									/>
+									{program.programName}
+								</div>
+								<div className="flex space-x-2 mt-2 items-center">
+									<CalendarDaysIcon
+										className="w-5 h-5 my-2 mr-2"
+										strokeWidth={2}
+									/>
+									Sem {program.currentSemester + 1}
+								</div>
+							</>
 						) : user?.role === 'FACULTY' ? (
-							<div className="flex space-x-2 items-center">
+							<div className="flex space-x-2 mt-2 items-center">
 								<BookOpenIcon
 									className="w-5 h-5 my-2 mr-2"
 									strokeWidth={2}
 								/>
-								4 Courses
+								{coursesList.length} Courses
 							</div>
 						) : null}
 					</div>

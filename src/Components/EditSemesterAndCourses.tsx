@@ -95,7 +95,7 @@ export default function EditSemestersAndCourses({
 					</THead>
 					<TBody>
 						{courses.map((crs, crsIndex) => (
-							<TRow>
+							<TRow key={crs.courseId}>
 								<TDataCell>
 									<InputField
 										label=""

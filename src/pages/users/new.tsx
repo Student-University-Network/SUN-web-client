@@ -24,6 +24,7 @@ import {
 } from 'src/Components/TableComponents';
 import { downloadFile, EmptyFunction, parseCSV } from 'src/Components/Utils';
 import { NewUserType, useAdmin } from 'src/context/AdminContext';
+import { useAuth } from 'src/context/AuthContext';
 import { ProgramListItem, useProgram } from 'src/context/ProgramContext';
 import Container from 'src/partials/Container';
 import Navbar from 'src/partials/Navbar';
@@ -34,6 +35,7 @@ export default function NewUsers() {
 	const { createBatchUsers } = useAdmin();
 	const { showAlert } = useAlert();
 	const router = useRouter();
+	const { user } = useAuth();
 	const [newUsersData, setNewUsers] = useState<Array<NewUserType>>([]);
 	const [defaultRole, setDefaultRole] = useState('STUDENT');
 
@@ -41,6 +43,15 @@ export default function NewUsers() {
 	const [passwordGenerate, setPasswordGenerate] = useState(false);
 	const [resourcePicker, setResourcePicker] =
 		useState<ResourceSelectorStateType>(defaultState());
+
+	useEffect(() => {
+		if (
+			user?.userId !== '' &&
+			['STUDENT', 'FACULTY', 'STAFF'].includes(user?.role || '')
+		) {
+			router.replace('/dashboard');
+		}
+	}, [user]);
 
 	useEffect(() => {
 		if (programsList.length === 0) {
@@ -53,8 +64,8 @@ export default function NewUsers() {
 		setNewUsers(
 			newUsersData.map((usr) => ({
 				...usr,
-				username: `${usr.firstName + usr.lastName}-${Math.round(
-					Math.random() * 1e4,
+				username: `${usr.firstName + usr.lastName}${Math.round(
+					Math.random() * 1e3,
 				)}`,
 			})),
 		);
@@ -104,6 +115,20 @@ export default function NewUsers() {
 			)
 		) {
 			showAlert(WARNING, 'Please fill all required fields', true);
+			return;
+		}
+		if (
+			newUsersData.some(
+				(usr) =>
+					usr.role === 'STUDENT' &&
+					(!usr.programId || usr.programId === ''),
+			)
+		) {
+			showAlert(
+				WARNING,
+				'Please assign a program to all student users',
+				true,
+			);
 			return;
 		}
 		createBatchUsers(
@@ -356,11 +381,12 @@ export default function NewUsers() {
 												className="text-center"
 											>
 												No data filled
-											</TDataCell>{' '}
+											</TDataCell>
 										</TRow>
 									) : null}
 									{newUsersData.map((row, rowIndex) => (
-										<TRow>
+										// eslint-disable-next-line react/no-array-index-key
+										<TRow key={`new_user_${rowIndex}`}>
 											<TDataCell className="p-0.5">
 												<InputField
 													className="input-field-unstyled"
@@ -482,6 +508,9 @@ export default function NewUsers() {
 											</TDataCell>
 											<TDataCell className="p-0.5">
 												<InputField
+													disabled={
+														row.role !== 'STUDENT'
+													}
 													className="input-field-unstyled"
 													placeholder="null"
 													value={row.programName}

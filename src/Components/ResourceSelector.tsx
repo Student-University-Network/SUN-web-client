@@ -90,7 +90,7 @@ export default function ResourceSelector<T extends { [k: string]: any }>({
 									colSpan={columns.length}
 									className="text-center"
 								>
-									No Data present
+									{`No ${label} available`}
 								</TDataCell>
 							</TRow>
 						) : (
@@ -133,7 +133,7 @@ export default function ResourceSelector<T extends { [k: string]: any }>({
 							if (!Object.values(selection).some((v) => v)) {
 								showAlert(
 									WARNING,
-									'Please select any element',
+									`Please select any ${label}`,
 									true,
 								);
 								return;

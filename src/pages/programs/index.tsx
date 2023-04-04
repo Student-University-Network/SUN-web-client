@@ -21,21 +21,32 @@ import { ERROR, useAlert } from 'src/Components/Alert';
 import { useUser } from 'src/context/UserContext';
 import {
 	AcademicCapIcon,
+	BookOpenIcon,
+	CalendarIcon,
 	ChartBarIcon,
+	InformationCircleIcon,
 	PlusCircleIcon,
 } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/router';
+import { useAuth } from 'src/context/AuthContext';
 
 export default function Programs() {
 	const router = useRouter();
-	const { programsList, getProgramsList } = useProgram();
+	const { programsList, program, getProgramsList } = useProgram();
 	const { showAlert } = useAlert();
+	const { user } = useAuth();
 	const { userId } = useUser();
 	const [searchTerm1, setSearchTerm1] = useState('');
 	const [searchTerm2, setSearchTerm2] = useState('');
 
 	useEffect(() => {
-		if (userId !== '') {
+		if (userId !== '' && ['FACULTY'].includes(user?.role || '')) {
+			router.replace('/dashboard');
+		}
+	}, [userId]);
+
+	useEffect(() => {
+		if (userId !== '' && user?.role === 'ADMIN') {
 			getProgramsList(
 				() => {},
 				() => {
@@ -62,143 +73,224 @@ export default function Programs() {
 			<Navbar />
 			<Sidebar />
 			<Container>
-				<div className="grid grid-cols-1 gap-2 px-2 sm:grid-cols-2 lg:grid-cols-3">
-					<PageMetric
-						label="Active"
-						value={programsList.length}
-						logo={
-							<ChartBarIcon
-								height={30}
-								width={30}
-								strokeWidth={2}
-								className="transition-transform duration-500 ease-in-out transform stroke-current text-primary-800 dark:text-gray-800"
-							/>
-						}
-					/>
-					<PageMetric
-						label="Total"
-						value={programsList.length}
-						logo={
-							<AcademicCapIcon
-								height={30}
-								width={30}
-								strokeWidth={2}
-								className="transition-transform duration-500 ease-in-out transform stroke-current text-primary-800 dark:text-gray-800"
-							/>
-						}
-					/>
-					<Link
-						className="flex items-center justify-between p-3 font-medium border-2 rounded-md shadow-lg text-primary-800 dark:text-white dark:bg-gray-800 dark:border-gray-600 group hover:bg-primary-200 hover:dark:bg-primary-800 lg:-order-1"
-						href="/programs/new"
-					>
-						<p className="pl-2 text-xl">New Program</p>
-						<div className="flex items-center justify-center transition-all duration-300 transform bg-white rounded-full w-14 h-14 group-hover:rotate-12">
-							<PlusCircleIcon
-								height={30}
-								width={30}
-								strokeWidth={2}
-								className="transition-transform duration-500 ease-in-out transform stroke-current text-primary-800 dark:text-gray-800"
-							/>
+				{userId !== '' && user?.role === 'STUDENT' ? (
+					<section className="ml-3 h-full px-3">
+						<span className="inline-flex items-center text-2xl font-medium text-primary-800 dark:text-primary-500">
+							<AcademicCapIcon className="m-8 h-8 mr-2" />
+							My Program
+						</span>
+						<div className="shadow-lg bg-gray-100 dark:bg-gray-700 p-4 rounded">
+							<div className="text-2xl m-2 flex justify-between items-center">
+								{program.programName}
+							</div>
+							<div className="flex mt-4 flex-row items-center">
+								<CalendarIcon
+									className="w-5 h-5 m-2"
+									strokeWidth={2}
+								/>
+								{`${new Date(program.startYear).getFullYear()} -
+								${new Date(program.endYear).getFullYear()}`}
+							</div>
+							<div className="flex flex-row items-center">
+								<InformationCircleIcon
+									className="w-5 h-5 m-2"
+									strokeWidth={2}
+								/>
+								{program.tag}
+							</div>
+							<div className="flex flex-row items-center">
+								<BookOpenIcon
+									className="w-5 h-5 m-2"
+									strokeWidth={2}
+								/>
+								Total semesters:
+								{program.duration}
+							</div>
 						</div>
-					</Link>
-				</div>
-				{/* Table for programs list */}
-				<div className="flex flex-col gap-4 p-3 mx-3 mt-4 border-b md:flex-row lg:flex-row dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
-					<InputField
-						className=""
-						label="Filter by Name"
-						placeholder="Program Name"
-						value={searchTerm1}
-						onChange={(e) => setSearchTerm1(e.target.value)}
-					/>
-					<div>
-						<InputField
-							className=""
-							label="Filter by TAG"
-							placeholder="Tag"
-							value={searchTerm2}
-							onChange={(e) => setSearchTerm2(e.target.value)}
-						/>
-					</div>
-					<div className="flex items-end">
-						<Button
-							className="btn-outline"
-							onClick={() => {
-								setSearchTerm1('');
-								setSearchTerm2('');
-							}}
-							label="Clear filter"
-						/>
-					</div>
-				</div>
-				<div className="w-full px-3 overflow-x-auto rounded-sm">
-					<table className="w-full">
-						<THead>
-							<THeaderRowCell>
-								<THeadCell>Program Name</THeadCell>
-								<THeadCell>Year</THeadCell>
-								<THeadCell>Duration</THeadCell>
-								<THeadCell>Tag</THeadCell>
-							</THeaderRowCell>
-						</THead>
-						<TBody>
-							{programsList.length === 0 ? (
-								<TRow>
-									<TDataCell
-										colSpan={4}
-										className="text-center"
+						<div className=" flex justify-between items-center m-1 my-8 ">
+							<div className="text-xl font-medium text-primary-800 dark:text-primary-500">
+								Batches
+							</div>
+						</div>
+						<div className="shadow rounded p-4 flex mt-2 justify-between">
+							<div className="text-xl my-2">
+								Batch:{' '}
+								{program.batches.find(
+									(b) => b.id === program.batchId,
+								)?.batchName || 'No batch assigned'}
+							</div>
+						</div>
+						<div className="flex justify-between items-center m-1 my-8 ">
+							<div className="text-xl font-medium text-primary-800 dark:text-primary-500">
+								Semesters
+							</div>
+						</div>
+						<div className="shadow rounded p-4 flex flex-col mt-2 items-start">
+							<div className="text-xl my-2">
+								Semester:{' '}
+								{program.semesters[program.currentSemester]
+									.semesterName || 'No semester assigned'}
+							</div>
+							<div className="flex flex-wrap">
+								{program.semesters[
+									program.currentSemester
+								].courses.map((crs) => (
+									<div
+										className="bg-gray-300 dark:bg-gray-700 rounded px-2 py-1 my-1 mx-2"
+										key={crs.courseId}
 									>
-										No programs created
-									</TDataCell>
-								</TRow>
-							) : null}
-							{programsList.map((program) =>
-								program.programName
-									.toLowerCase()
-									.indexOf(searchTerm1.toLowerCase()) !==
-									-1 &&
-								program.tag
-									.toLowerCase()
-									.indexOf(searchTerm2.toLowerCase()) !==
-									-1 ? (
-									<TRow
-										className="cursor-pointer"
-										key={program.programId}
-										onClick={() => {
-											router.push({
-												pathname: '/programs/view',
-												query: {
-													id: program.programId,
-												},
-											});
-										}}
-									>
-										<TDataCell className="font-semibold">
-											{program.programName}
-										</TDataCell>
-										<TDataCell>
-											{new Date(
-												program.startYear,
-											).getFullYear()}
-											-
-											{new Date(
-												program.endYear,
-											).getFullYear()}
-										</TDataCell>
-										<TDataCell>
-											{program.duration / 2} years
-										</TDataCell>
-										<TDataCell>
-											<span className="tag">
-												{program.tag}
-											</span>
-										</TDataCell>
-									</TRow>
-								) : null,
-							)}
-						</TBody>
-					</table>
-				</div>
+										{crs.courseName}
+									</div>
+								))}
+							</div>
+						</div>
+					</section>
+				) : (
+					<>
+						<div className="grid grid-cols-1 gap-2 px-2 sm:grid-cols-2 lg:grid-cols-3">
+							<PageMetric
+								label="Active"
+								value={programsList.length}
+								logo={
+									<ChartBarIcon
+										height={30}
+										width={30}
+										strokeWidth={2}
+										className="transition-transform duration-500 ease-in-out transform stroke-current text-primary-800 dark:text-gray-800"
+									/>
+								}
+							/>
+							<PageMetric
+								label="Total"
+								value={programsList.length}
+								logo={
+									<AcademicCapIcon
+										height={30}
+										width={30}
+										strokeWidth={2}
+										className="transition-transform duration-500 ease-in-out transform stroke-current text-primary-800 dark:text-gray-800"
+									/>
+								}
+							/>
+							<Link
+								className="flex items-center justify-between p-3 font-medium border-2 rounded-md shadow-lg text-primary-800 dark:text-white dark:bg-gray-800 dark:border-gray-600 group hover:bg-primary-200 hover:dark:bg-primary-800 lg:-order-1"
+								href="/programs/new"
+							>
+								<p className="pl-2 text-xl">New Program</p>
+								<div className="flex items-center justify-center transition-all duration-300 transform bg-white rounded-full w-14 h-14 group-hover:rotate-12">
+									<PlusCircleIcon
+										height={30}
+										width={30}
+										strokeWidth={2}
+										className="transition-transform duration-500 ease-in-out transform stroke-current text-primary-800 dark:text-gray-800"
+									/>
+								</div>
+							</Link>
+						</div>
+						{/* Table for programs list */}
+						<div className="flex flex-col gap-4 p-3 mx-3 mt-4 border-b md:flex-row lg:flex-row dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
+							<InputField
+								className=""
+								label="Filter by Name"
+								placeholder="Program Name"
+								value={searchTerm1}
+								onChange={(e) => setSearchTerm1(e.target.value)}
+							/>
+							<div>
+								<InputField
+									className=""
+									label="Filter by TAG"
+									placeholder="Tag"
+									value={searchTerm2}
+									onChange={(e) =>
+										setSearchTerm2(e.target.value)
+									}
+								/>
+							</div>
+							<div className="flex items-end">
+								<Button
+									className="btn-outline"
+									onClick={() => {
+										setSearchTerm1('');
+										setSearchTerm2('');
+									}}
+									label="Clear filter"
+								/>
+							</div>
+						</div>
+						<div className="w-full px-3 overflow-x-auto rounded-sm">
+							<table className="w-full">
+								<THead>
+									<THeaderRowCell>
+										<THeadCell>Program Name</THeadCell>
+										<THeadCell>Year</THeadCell>
+										<THeadCell>Duration</THeadCell>
+										<THeadCell>Tag</THeadCell>
+									</THeaderRowCell>
+								</THead>
+								<TBody>
+									{programsList.length === 0 ? (
+										<TRow>
+											<TDataCell
+												colSpan={4}
+												className="text-center"
+											>
+												No programs created
+											</TDataCell>
+										</TRow>
+									) : null}
+									{programsList.map((prg) =>
+										prg.programName
+											.toLowerCase()
+											.indexOf(
+												searchTerm1.toLowerCase(),
+											) !== -1 &&
+										prg.tag
+											.toLowerCase()
+											.indexOf(
+												searchTerm2.toLowerCase(),
+											) !== -1 ? (
+											<TRow
+												className="cursor-pointer"
+												key={prg.programId}
+												onClick={() => {
+													router.push({
+														pathname:
+															'/programs/view',
+														query: {
+															id: prg.programId,
+														},
+													});
+												}}
+											>
+												<TDataCell className="font-semibold">
+													{prg.programName}
+												</TDataCell>
+												<TDataCell>
+													{new Date(
+														prg.startYear,
+													).getFullYear()}
+													-
+													{new Date(
+														prg.endYear,
+													).getFullYear()}
+												</TDataCell>
+												<TDataCell>
+													{prg.duration / 2} years
+												</TDataCell>
+												<TDataCell>
+													<span className="tag">
+														{prg.tag}
+													</span>
+												</TDataCell>
+											</TRow>
+										) : null,
+									)}
+								</TBody>
+							</table>
+						</div>
+					</>
+				)}
 			</Container>
 		</>
 	);

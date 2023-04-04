@@ -169,7 +169,7 @@ export default function EditBatchDetails({
 						</THead>
 						<TBody>
 							{batch.courses.map((crs, crsIndex) => (
-								<TRow>
+								<TRow key={crs.courseId}>
 									<TDataCell>{crsIndex + 1}</TDataCell>
 									<TDataCell>{crs.courseName}</TDataCell>
 									<TDataCell>

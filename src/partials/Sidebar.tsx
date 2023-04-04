@@ -66,28 +66,32 @@ export default function Sidebar() {
 							label="Users"
 						/>
 					) : null}
-					<NavItem
-						routerPath={router.pathname}
-						hrefPath="/programs"
-						icon={
-							<AcademicCapIcon
-								className="w-5 h-5"
-								strokeWidth={2}
-							/>
-						}
-						label="Programs"
-					/>
-					<NavItem
-						routerPath={router.pathname}
-						hrefPath="/courses"
-						icon={
-							<LightBulbIcon
-								className="w-5 h-5"
-								strokeWidth={2}
-							/>
-						}
-						label="Courses"
-					/>
+					{!['FACULTY'].includes(user?.role || '') ? (
+						<NavItem
+							routerPath={router.pathname}
+							hrefPath="/programs"
+							icon={
+								<AcademicCapIcon
+									className="w-5 h-5"
+									strokeWidth={2}
+								/>
+							}
+							label="Programs"
+						/>
+					) : null}
+					{user?.role !== 'ADMIN' ? (
+						<NavItem
+							routerPath={router.pathname}
+							hrefPath="/courses"
+							icon={
+								<LightBulbIcon
+									className="w-5 h-5"
+									strokeWidth={2}
+								/>
+							}
+							label="Courses"
+						/>
+					) : null}
 					<NavItem
 						routerPath={router.pathname}
 						hrefPath="/notifications"

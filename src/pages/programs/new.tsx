@@ -4,7 +4,7 @@ import Navbar from 'src/partials/Navbar';
 import Head from 'next/head';
 import Container from 'src/partials/Container';
 import InputField from 'src/Components/InputField';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, IconButton } from 'src/Components/Button';
 import { useRouter } from 'next/router';
 import {
@@ -26,6 +26,8 @@ import {
 import CourseModal from 'src/Components/CourseModal';
 import { ERROR, INFO, useAlert, WARNING } from 'src/Components/Alert';
 import { useProgram } from 'src/context/ProgramContext';
+import { useUser } from 'src/context/UserContext';
+import { useAuth } from 'src/context/AuthContext';
 
 interface Course {
 	index: number;
@@ -47,6 +49,8 @@ export default function NewProgram() {
 	const router = useRouter();
 	const { showAlert } = useAlert();
 	const { createProgram } = useProgram();
+	const { userId } = useUser();
+	const { user } = useAuth();
 
 	const [programName, setProgramName] = useState('');
 	const [startYear, setStartYear] = useState('');
@@ -144,6 +148,15 @@ export default function NewProgram() {
 				),
 		);
 	};
+
+	useEffect(() => {
+		if (
+			userId !== '' &&
+			['STUDENT', 'FACULTY', 'STAFF'].includes(user?.role || '')
+		) {
+			router.replace('/dashboard');
+		}
+	}, [userId]);
 
 	return (
 		<>

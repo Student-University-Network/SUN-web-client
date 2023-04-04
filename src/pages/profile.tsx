@@ -102,10 +102,6 @@ export default function Profile() {
 									{profile.fullName.firstName}{' '}
 									{profile.fullName.lastName}
 								</h1>
-								<div className="text-sm text-center text-gray-500 dark:text-gray-400">
-									{/* TODO (Profile UI) : Use program data here */}
-									BE C-Scheme 2019 | BEIT2 - Roll no 36
-								</div>
 							</div>
 						</div>
 					</div>

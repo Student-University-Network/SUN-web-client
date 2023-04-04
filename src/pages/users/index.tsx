@@ -25,16 +25,27 @@ import { useEffect, useState } from 'react';
 import { ERROR, useAlert } from 'src/Components/Alert';
 import { useUser } from 'src/context/UserContext';
 import { useRouter } from 'next/router';
+import { useAuth } from 'src/context/AuthContext';
 
 export default function Users() {
 	const router = useRouter();
 	const { usersList, getUsersList } = useAdmin();
 	const { userId } = useUser();
+	const { user } = useAuth();
 	const { showAlert } = useAlert();
 	const [searchTerm, setSearchTerm] = useState('');
 
 	useEffect(() => {
-		if (userId !== '') {
+		if (
+			userId !== '' &&
+			['STUDENT', 'FACULTY', 'STAFF'].includes(user?.role || '')
+		) {
+			router.replace('/dashboard');
+		}
+	}, [userId]);
+
+	useEffect(() => {
+		if (userId !== '' && user?.role === 'ADMIN') {
 			getUsersList(
 				() => {},
 				() => {
