@@ -7,6 +7,7 @@ import {
 	LightBulbIcon,
 	UserGroupIcon,
 	BellAlertIcon,
+	CalendarDaysIcon,
 } from '@heroicons/react/24/outline';
 import { useAuth } from 'src/context/AuthContext';
 
@@ -92,6 +93,32 @@ export default function Sidebar() {
 							label="Courses"
 						/>
 					) : null}
+
+					{user?.role === 'ADMIN' ? (
+						<NavItem
+							routerPath={router.pathname}
+							hrefPath="/timetable/manage"
+							icon={
+								<CalendarDaysIcon
+									className="w-5 h-5"
+									strokeWidth={2}
+								/>
+							}
+							label="TimeTable"
+						/>
+					) : (
+						<NavItem
+							routerPath={router.pathname}
+							hrefPath="/timetable/view"
+							icon={
+								<CalendarDaysIcon
+									className="w-5 h-5"
+									strokeWidth={2}
+								/>
+							}
+							label="TimeTable"
+						/>
+					)}
 					<NavItem
 						routerPath={router.pathname}
 						hrefPath="/notifications"

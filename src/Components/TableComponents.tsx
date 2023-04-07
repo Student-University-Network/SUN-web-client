@@ -1,10 +1,6 @@
 /* eslint-disable react/require-default-props */
 import { TableHTMLAttributes } from 'react';
 
-// interface ITableProps extends TableHTMLAttributes<HTMLTableCellElement> {
-// 	cellPadding: 2;
-// }
-
 function THead({
 	className = '',
 	children,
@@ -18,7 +14,7 @@ function THeadCell({
 	...rest
 }: TableHTMLAttributes<HTMLTableCellElement>) {
 	return (
-		<th className={`px-4 py-3 ${className}`} {...rest}>
+		<th className={`px-4 py-3 font-bold ${className}`} {...rest}>
 			{children}
 		</th>
 	);
@@ -63,7 +59,7 @@ function TRow({
 	return (
 		<tr
 			className={`text-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100
-			 dark:hover:bg-gray-900 dark:text-gray-400 ${className}`}
+			 dark:hover:bg-gray-900 dark:text-gray-300 ${className}`}
 			{...rest}
 		>
 			{children}
@@ -93,5 +89,58 @@ function TDataCell({
 		</td>
 	);
 }
+interface TimeTableCellProps extends TDataCellProps {
+	subjectName?: string;
+	profName?: string;
+}
+function TimeTableCell({
+	className = '',
+	colSpan = 1,
+	rowSpan = 1,
+	subjectName,
+	profName,
+	children,
+	...rest
+}: TimeTableCellProps) {
+	return (
+		<td
+			colSpan={colSpan}
+			rowSpan={rowSpan}
+			className={`p-4 text-sm ttcell-style  ${className}`}
+			{...rest}
+		>
+			{children}
+			{subjectName}
+			<p className="italic">{profName}</p>
+		</td>
+	);
+}
+function TimeTableEmptyCell({
+	className = '',
+	colSpan = 7,
+	rowSpan = 1,
+	children,
+	...rest
+}: TimeTableCellProps) {
+	return (
+		<td
+			colSpan={colSpan}
+			rowSpan={rowSpan}
+			className={`p-4 text-sm ttcell-style  ${className}`}
+			{...rest}
+		>
+			Holiday
+		</td>
+	);
+}
 
-export { THead, THeadCell, THeaderRowCell, TBody, TRow, TDataCell };
+export {
+	THead,
+	THeadCell,
+	THeaderRowCell,
+	TBody,
+	TRow,
+	TDataCell,
+	TimeTableCell,
+	TimeTableEmptyCell,
+};
