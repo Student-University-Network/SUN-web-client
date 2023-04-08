@@ -85,7 +85,7 @@ export default function ResourceSelector<T extends { [k: string]: any }>({
 					</THead>
 					<TBody className="overflow-y-auto">
 						{data.length === 0 ? (
-							<TRow>
+							<TRow key="eafef">
 								<TDataCell
 									colSpan={columns.length}
 									className="text-center"
@@ -120,7 +120,7 @@ export default function ResourceSelector<T extends { [k: string]: any }>({
 								>
 									{columns.map((key) => (
 										<TDataCell>{row[key]}</TDataCell>
-									))}{' '}
+									))}
 								</TRow>
 							))
 						)}

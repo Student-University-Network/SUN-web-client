@@ -41,6 +41,16 @@ api.interceptors.response.use(
 				})
 				.catch((error: AxiosError) => error);
 		}
+		if (
+			err.response?.status === 401 &&
+			window.location.pathname !== '/login' &&
+			localStorage.getItem('loggedIn') === 'true'
+		) {
+			// eslint-disable-next-line no-alert
+			alert(
+				'Your sessions has expired !!. Please refresh and login back',
+			);
+		}
 		return Promise.reject(err);
 	},
 );

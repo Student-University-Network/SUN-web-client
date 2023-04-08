@@ -3,6 +3,7 @@ import { createContext, useContext, useState } from 'react';
 import adminService, { AssignProfessorInput } from 'src/api/adminService';
 import { EmptyFunction } from 'src/Components/Utils';
 import { FullBatch } from 'src/Components/EditBatchDetails';
+import { Timetable } from 'src/pages/timetable/manage';
 import { useAuth } from './AuthContext';
 
 export interface NewUserType {
@@ -75,6 +76,16 @@ type AdminContextType = {
 		done: (data: any) => void,
 		error: (data: any) => void,
 	) => void;
+	setTimetable: (
+		payload: Timetable,
+		done: (data: any) => void,
+		error: (data: any) => void,
+	) => void;
+	getTimetable: (
+		batchId: string,
+		done: (data: Timetable) => void,
+		error: (data: any) => void,
+	) => void;
 };
 
 const AdminContext = createContext<AdminContextType>({
@@ -85,6 +96,8 @@ const AdminContext = createContext<AdminContextType>({
 	assignProfessors: () => {},
 	getBatchDetails: () => {},
 	saveBatchDetails: () => {},
+	setTimetable: () => {},
+	getTimetable: () => {},
 });
 
 type Props = {
@@ -103,10 +116,14 @@ export function AdminProvider({ children }: Props) {
 		adminService
 			.getUserslist()
 			.then((res) => {
+				console.log(res.data);
 				setUsersList(res.data.data.users);
 				done(null);
 			})
-			.catch((err) => error(null));
+			.catch((err) => {
+				error(null);
+				console.log(err);
+			});
 	}
 
 	function createBatchUsers(
@@ -170,6 +187,27 @@ export function AdminProvider({ children }: Props) {
 			.then((res) => done(null))
 			.catch((err) => error(null));
 	}
+	function setTimetable(
+		payload: Timetable,
+		done: (data: any) => void,
+		error: (data: any) => void,
+	) {
+		adminService.setTimetable(payload).then(
+			(res) => done(null),
+			(err) => error(null),
+		);
+	}
+
+	function getTimetable(
+		batchId: string,
+		done: (data: Timetable) => void,
+		error: (data: any) => void,
+	) {
+		adminService
+			.getTimetable(batchId)
+			.then((res) => done(res.data.data))
+			.catch((err) => error(null));
+	}
 
 	// eslint-disable-next-line react/jsx-no-constructed-context-values
 	const value = {
@@ -180,6 +218,8 @@ export function AdminProvider({ children }: Props) {
 		assignProfessors,
 		getBatchDetails,
 		saveBatchDetails,
+		setTimetable,
+		getTimetable,
 	};
 
 	return (

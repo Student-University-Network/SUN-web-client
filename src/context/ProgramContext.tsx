@@ -122,7 +122,19 @@ export function ProgramProvider({ children }: Props) {
 		programService
 			.getProgramDetails(programId)
 			.then((res) => {
-				done(res.data.data);
+				const data = {
+					...res.data.data,
+					semesters: res.data.data.semesters.map((sem) => ({
+						...sem,
+						courses: sem.courses.map((crs) => ({
+							courseId: crs.courseId,
+							courseName: crs.courseName,
+							totalLectures: crs.totalLectures,
+							compulsory: crs.compulsory,
+						})),
+					})),
+				};
+				done(data);
 			})
 			.catch((err: AxiosError) => {
 				error(null);

@@ -89,6 +89,7 @@ export function AuthProvider({ children }: Props) {
 					role: data.role,
 					programId: data.programId,
 				});
+				localStorage.setItem('loggedIn', 'true');
 				done();
 			})
 			.catch((err: any) => {
@@ -103,6 +104,7 @@ export function AuthProvider({ children }: Props) {
 				setUser(null);
 				router.push('/');
 				router.reload();
+				localStorage.removeItem('loggedIn');
 			})
 			.catch((err: any) => {
 				console.error('Server Error');

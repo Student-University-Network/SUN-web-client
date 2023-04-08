@@ -1,6 +1,7 @@
 import {
 	AcademicCapIcon,
 	BookOpenIcon,
+	CalendarDaysIcon,
 	CalendarIcon,
 	InformationCircleIcon,
 	PencilIcon,
@@ -358,16 +359,34 @@ export default function ViewProgram() {
 										Total students: {batch.students}
 									</div>
 								</div>
-								<IconButton
-									className="text-base btn-outline px-2"
-									leadingIcon={
-										<PencilIcon className="w-5 h-5" />
-									}
-									onClick={() => {
-										setInEditBatch(batch);
-										setEditBatches(!editBatches);
-									}}
-								/>
+								<div className="flex items-center">
+									<IconButton
+										className="text-base btn-outline px-2"
+										leadingIcon={
+											<CalendarDaysIcon className="w-5 h-5" />
+										}
+										onClick={() => {
+											router.push({
+												pathname: '/timetable/manage',
+												query: {
+													programId:
+														programData.programId,
+													batchId: batch.id,
+												},
+											});
+										}}
+									/>
+									<IconButton
+										className="text-base btn-outline px-2"
+										leadingIcon={
+											<PencilIcon className="w-5 h-5" />
+										}
+										onClick={() => {
+											setInEditBatch(batch);
+											setEditBatches(!editBatches);
+										}}
+									/>
+								</div>
 							</div>
 						))}
 

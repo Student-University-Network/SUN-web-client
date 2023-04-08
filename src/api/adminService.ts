@@ -5,6 +5,7 @@ import {
 	UserListItem,
 } from 'src/context/AdminContext';
 import { FullBatch } from 'src/Components/EditBatchDetails';
+import { Timetable } from 'src/pages/timetable/manage';
 import http from '.';
 
 interface CreateBatchUsersInput {
@@ -34,6 +35,11 @@ export interface GetBatchDetailsResponse {
 	data: FullBatch;
 }
 
+export interface GetTimetableResponse {
+	status: string;
+	data: Timetable;
+}
+
 class AdminService {
 	getUserslist() {
 		return http.get<UsersListResponse>('/admin/user-list');
@@ -57,6 +63,14 @@ class AdminService {
 
 	saveBatchDetails(payload: FullBatch) {
 		return http.post('/admin/batch', payload);
+	}
+
+	setTimetable(payload: Timetable) {
+		return http.post('/timetable/new', payload);
+	}
+
+	getTimetable(batchId: string) {
+		return http.get<GetTimetableResponse>(`/timetable/${batchId}`);
 	}
 }
 
