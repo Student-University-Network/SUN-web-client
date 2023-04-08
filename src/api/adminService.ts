@@ -72,6 +72,10 @@ class AdminService {
 	getTimetable(batchId: string) {
 		return http.get<GetTimetableResponse>(`/timetable/${batchId}`);
 	}
+
+	getFacultyTimetable() {
+		return http.get<GetTimetableResponse>('/timetable/faculty');
+	}
 }
 
 export default new AdminService();

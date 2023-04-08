@@ -1,20 +1,59 @@
-import { CalendarDaysIcon } from '@heroicons/react/24/outline';
+import {
+	CalendarDaysIcon,
+	ClockIcon,
+	HomeIcon,
+	UserIcon,
+} from '@heroicons/react/24/outline';
 import Head from 'next/head';
 import router from 'next/router';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useAdmin } from 'src/context/AdminContext';
 import { useAuth } from 'src/context/AuthContext';
+import { useProgram } from 'src/context/ProgramContext';
 import Container from 'src/partials/Container';
 import Navbar from 'src/partials/Navbar';
 import Sidebar from 'src/partials/Sidebar';
+import { ERROR, useAlert } from 'src/Components/Alert';
+import { Timetable, WeekDay, lectureTimeLabel } from './manage';
 
 export default function ViewTimeTable() {
 	const { user } = useAuth();
+	const { showAlert } = useAlert();
+	const { program } = useProgram();
+	const { getTimetable } = useAdmin();
+	const [timetableData, setTimetableData] = useState<Timetable>({
+		batchId: '',
+		batchName: '',
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+		days: [...Array(7)].map((_, i) => ({ weekDay: i, lectures: [] })),
+	});
 
 	useEffect(() => {
 		if (user?.userId !== '' && user?.role === 'ADMIN') {
 			router.replace('/dashboard');
 		}
 	}, [user]);
+
+	useEffect(() => {
+		if (user?.role === 'STUDENT' && program.programId !== '') {
+			getTimetable(
+				program.batchId,
+				(data: Timetable) => setTimetableData(data),
+				() => showAlert(ERROR, 'Failed to fetch timetable', false),
+			);
+		}
+	}, [program]);
+
+	useEffect(() => {
+		if (user?.role === 'FACULTY') {
+			getTimetable(
+				program.batchId,
+				(data: Timetable) => setTimetableData(data),
+				() => showAlert(ERROR, 'Failed to fetch timetable', false),
+			);
+		}
+	}, [user]);
+
 	return (
 		<>
 			<Head>
@@ -37,6 +76,71 @@ export default function ViewTimeTable() {
 						<CalendarDaysIcon className="m-8 h-8 mr-2" />
 						View Timetable
 					</span>
+					<div className="py-5 grid grid-cols-6 gap-6">
+						<div className="w-full col-span-6 flex flex-col space-y-2">
+							{timetableData === null ? (
+								<div className="text-2xl font-bold text-slate-700 dark:text-slate-300 text-center w-full">
+									No timetable is assigned for your batch
+								</div>
+							) : (
+								timetableData.days.map((day) => (
+									<div
+										key={day.weekDay}
+										className="flex items-center border dark:border-none w-full min-h-[100px]"
+									>
+										<div className="bg-primary-200 mix-blend-overlay dark:bg-primary-900/20 h-full px-2 flex items-center justify-center w-[10%]">
+											{WeekDay[day.weekDay]}
+										</div>
+										<div className="flex space-x-3 p-2 w-full h-full items-center bg-gradient-to-r from-primary-200 via-primary-100 dark:bg-gradient-to-r mix-blend-overlay dark:from-primary-900/30 dark:via-primary-900/10 dark:bg-gray-900 overflow-x-auto">
+											{day.lectures.length === 0 ? (
+												<div className="flex text-slate-700 dark:text-slate-300 items-center justify-center w-full">
+													No lectures
+												</div>
+											) : (
+												day.lectures.map((lecture) => (
+													<div
+														key={lecture.courseId}
+														className="p-4 min-w-[220px] bg-white dark:bg-slate-800 space-y-1 shadow-md rounded-lg flex flex-col items-start justify-between hover:scale-105 transition"
+													>
+														<div className="font-semibold text-lg mb-2 flex w-full justify-between items-center">
+															{lecture.courseName}
+														</div>
+														<div className="text-sm flex space-x-1 items-center">
+															<UserIcon className="w-4 h-4" />
+															<div>
+																{user?.role ===
+																'FACULTY'
+																	? `${
+																			lecture.batchName ||
+																			'Unknown batch'
+																	  }`
+																	: `Prof. ${lecture.professorName}`}
+															</div>
+														</div>
+														<div className="text-sm flex space-x-1 items-center">
+															<ClockIcon className="w-4 h-4" />
+															<div>
+																{lectureTimeLabel(
+																	lecture.startTime,
+																	lecture.endTime,
+																)}
+															</div>
+														</div>
+														<div className="text-sm flex space-x-1 items-center">
+															<HomeIcon className="w-4 h-4" />
+															<div>
+																{lecture.room}
+															</div>
+														</div>
+													</div>
+												))
+											)}
+										</div>
+									</div>
+								))
+							)}
+						</div>
+					</div>
 				</section>
 			</Container>
 		</>

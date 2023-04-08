@@ -93,10 +93,12 @@ export default function EditBatchDetails({
 
 	function assignStudent(v: UserListItem[]) {
 		const newBatch = { ...batch };
-		newBatch.students.push(v[0]);
-		newBatch.unassignedStudents = newBatch.unassignedStudents.filter(
-			(u) => u.id !== v[0].id,
-		);
+		v.forEach((_v) => {
+			newBatch.students.push(_v);
+			newBatch.unassignedStudents = newBatch.unassignedStudents.filter(
+				(u) => u.id !== _v.id,
+			);
+		});
 		setResourcePicker(defaultState());
 		setBatch(newBatch);
 	}
@@ -122,6 +124,7 @@ export default function EditBatchDetails({
 					data={resourcePicker.data}
 					columns={resourcePicker.column}
 					label={resourcePicker.label}
+					mutiselect={resourcePicker.multiSelect}
 				/>
 			) : null}
 			<div
@@ -274,7 +277,7 @@ export default function EditBatchDetails({
 													'role',
 												],
 												show: true,
-												multiSelect: false,
+												multiSelect: true,
 												savePrompt: (
 													v: UserListItem[],
 												) => assignStudent(v),

@@ -5,6 +5,9 @@ import {
 	CalendarDaysIcon,
 	PencilIcon,
 	TrashIcon,
+	ClockIcon,
+	HomeIcon,
+	UserIcon,
 } from '@heroicons/react/24/outline';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -58,6 +61,7 @@ export interface Lecture {
 	courseName: string;
 	professorId: string;
 	professorName: string;
+	room: string;
 	startTime: {
 		hour: number;
 		minute: number;
@@ -66,6 +70,8 @@ export interface Lecture {
 		hour: number;
 		minute: number;
 	};
+	batchId?: string;
+	batchName?: string;
 }
 
 const defaultData: Timetable = {
@@ -80,6 +86,7 @@ const defaultInEditLecture = {
 	courseName: '',
 	professorId: '',
 	professorName: '',
+	room: '',
 	startTime: {
 		hour: 0,
 		minute: 0,
@@ -90,7 +97,7 @@ const defaultInEditLecture = {
 	},
 };
 
-enum WeekDay {
+export enum WeekDay {
 	Sunday = 0,
 	Monday = 1,
 	Tuesday = 2,
@@ -98,6 +105,17 @@ enum WeekDay {
 	Thursday = 4,
 	Friday = 5,
 	Saturday = 6,
+}
+
+export function lectureTimeLabel(
+	start: { hour: number; minute: number },
+	end: { hour: number; minute: number },
+) {
+	return `${start.hour < 10 ? `0${start.hour}` : start.hour}:${
+		start.minute < 10 ? `0${start.minute}` : start.minute
+	} - ${end.hour < 10 ? `0${end.hour}` : end.hour}:${
+		end.minute < 10 ? `0${end.minute}` : end.minute
+	}`;
 }
 
 export default function ManageTimetable() {
@@ -200,17 +218,6 @@ export default function ManageTimetable() {
 		}
 	}, [currentProgram]);
 
-	function lectureTimeLabel(
-		start: { hour: number; minute: number },
-		end: { hour: number; minute: number },
-	) {
-		return `${start.hour < 10 ? `0${start.hour}` : start.hour}:${
-			start.minute < 10 ? `0${start.minute}` : start.minute
-		} - ${end.hour < 10 ? `0${end.hour}` : end.hour}:${
-			end.minute < 10 ? `0${end.minute}` : end.minute
-		}`;
-	}
-
 	function addLecture(data: Lecture) {
 		const newTT = { ...timetableData };
 		if (inEditLecture.id !== '') {
@@ -219,7 +226,7 @@ export default function ManageTimetable() {
 				days: timetableData.days.map((d) => ({
 					...d,
 					lectures: d.lectures.map((l) => {
-						if (l.id === data.id) {
+						if (l.id === data.id && d.weekDay === dayToAdd) {
 							return { ...data };
 						}
 						return l;
@@ -243,6 +250,7 @@ export default function ManageTimetable() {
 			}
 			return d;
 		});
+		setDayToAdd(0);
 		setTimetableData(newTT);
 		setShowAddDayModal(false);
 	}
@@ -305,6 +313,9 @@ export default function ManageTimetable() {
 									label="Select Program"
 									value={currentProgram?.programName}
 									readOnly
+									disabled={
+										batchId !== undefined && batchId !== ''
+									}
 									onClick={() =>
 										setResourcePicker({
 											data: programsList,
@@ -332,6 +343,9 @@ export default function ManageTimetable() {
 									label="Select Batch"
 									value={currentBatch.batchName}
 									readOnly
+									disabled={
+										batchId !== undefined && batchId !== ''
+									}
 									onClick={() =>
 										setResourcePicker({
 											data: programDetails.batches,
@@ -359,13 +373,16 @@ export default function ManageTimetable() {
 									label="Save"
 									onClick={() => onSumitTimetable()}
 								/>
-								<Button
-									className="btn-outline"
-									label="Clear"
-									onClick={() =>
-										setTimetableData(defaultData)
-									}
-								/>
+								{batchId !== undefined &&
+								batchId !== '' ? null : (
+									<Button
+										className="btn-outline"
+										label="Clear"
+										onClick={() =>
+											setTimetableData(defaultData)
+										}
+									/>
+								)}
 							</div>
 						</div>
 						<div className="py-5 grid grid-cols-6 gap-6">
@@ -418,9 +435,18 @@ export default function ManageTimetable() {
 																						d.lectures.filter(
 																							(
 																								l,
-																							) =>
-																								l.id !==
-																								lecture.id,
+																							) => {
+																								if (
+																									d.weekDay !==
+																									day.weekDay
+																								) {
+																									return true;
+																								}
+																								return (
+																									l.id !==
+																									lecture.id
+																								);
+																							},
 																						),
 																				}),
 																			),
@@ -430,15 +456,29 @@ export default function ManageTimetable() {
 															/>
 														</div>
 													</div>
-													<div className="text-sm">
-														Prof.{' '}
-														{lecture.professorName}
+													<div className="text-sm flex space-x-1 items-center">
+														<UserIcon className="w-4 h-4" />
+														<div>
+															Prof.{' '}
+															{
+																lecture.professorName
+															}
+														</div>
 													</div>
-													<div className="text-sm">
-														{lectureTimeLabel(
-															lecture.startTime,
-															lecture.endTime,
-														)}
+													<div className="text-sm flex space-x-1 items-center">
+														<ClockIcon className="w-4 h-4" />
+														<div>
+															{lectureTimeLabel(
+																lecture.startTime,
+																lecture.endTime,
+															)}
+														</div>
+													</div>
+													<div className="text-sm flex space-x-1 items-center">
+														<HomeIcon className="w-4 h-4" />
+														<div>
+															{lecture.room}
+														</div>
 													</div>
 												</div>
 											))}

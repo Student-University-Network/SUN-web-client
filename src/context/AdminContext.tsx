@@ -176,6 +176,7 @@ export function AdminProvider({ children }: Props) {
 			.then((res) => done(res.data.data))
 			.catch((err) => error(null));
 	}
+
 	function saveBatchDetails(
 		payload: FullBatch,
 		done: (data: any) => void,
@@ -187,11 +188,13 @@ export function AdminProvider({ children }: Props) {
 			.then((res) => done(null))
 			.catch((err) => error(null));
 	}
+
 	function setTimetable(
 		payload: Timetable,
 		done: (data: any) => void,
 		error: (data: any) => void,
 	) {
+		if (user?.role !== 'ADMIN') return;
 		adminService.setTimetable(payload).then(
 			(res) => done(null),
 			(err) => error(null),
@@ -203,10 +206,17 @@ export function AdminProvider({ children }: Props) {
 		done: (data: Timetable) => void,
 		error: (data: any) => void,
 	) {
-		adminService
-			.getTimetable(batchId)
-			.then((res) => done(res.data.data))
-			.catch((err) => error(null));
+		if (user?.role === 'FACULTY') {
+			adminService
+				.getFacultyTimetable()
+				.then((res) => done(res.data.data))
+				.catch((err) => error(null));
+		} else {
+			adminService
+				.getTimetable(batchId)
+				.then((res) => done(res.data.data))
+				.catch((err) => error(null));
+		}
 	}
 
 	// eslint-disable-next-line react/jsx-no-constructed-context-values

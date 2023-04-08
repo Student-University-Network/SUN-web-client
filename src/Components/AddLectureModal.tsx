@@ -12,7 +12,7 @@ import ResourceSelector, {
 	defaultState,
 } from './ResourceSelector';
 import { FullBatch } from './EditBatchDetails';
-import { ERROR, useAlert } from './Alert';
+import { ERROR, WARNING, useAlert } from './Alert';
 
 interface AddLectureProps {
 	batchId: string;
@@ -122,6 +122,14 @@ export default function AddLectureModal({
 						disabled
 						readOnly
 					/>
+					<InputField
+						type="text"
+						label="Room no"
+						value={lecture.room}
+						onChange={(e) =>
+							setLecture({ ...lecture, room: e.target.value })
+						}
+					/>
 					<label className="block text-base font-medium text-primary-800 dark:text-primary-500">
 						Start time (24hrs)
 					</label>
@@ -196,7 +204,20 @@ export default function AddLectureModal({
 							}
 						/>
 					</div>
-					<Button label="Add" onClick={() => submitPrompt(lecture)} />
+					<Button
+						label="Add"
+						onClick={() => {
+							if (
+								lecture.courseId === '' ||
+								lecture.professorId === '' ||
+								lecture.room === ''
+							) {
+								showAlert(WARNING, 'Please all fields', true);
+								return;
+							}
+							submitPrompt(lecture);
+						}}
+					/>
 				</div>
 			</div>
 		</>

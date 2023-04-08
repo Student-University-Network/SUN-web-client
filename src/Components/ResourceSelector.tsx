@@ -69,7 +69,9 @@ export default function ResourceSelector<T extends { [k: string]: any }>({
 				onClick={(e) => e.stopPropagation()}
 			>
 				<div className="text-xl font-semibold py-2 flex w-full justify-between items-center">
-					<div>Select {label}</div>
+					<div>
+						Select {mutiselect ? 'Multiple' : ''} {label}
+					</div>
 					<XMarkIcon
 						className="w-8 h-8 hover:bg-slate-300 dark:hover:bg-gray-700 p-2 rounded-full cursor-pointer"
 						onClick={() => closePrompt()}
