@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import facultyService from 'src/api/facultyService';
+import { LectureStatus } from 'src/pages/timetable/manage';
 import { useAuth } from './AuthContext';
 
 export interface CourseItem {
@@ -19,11 +20,19 @@ type FacultyContextType = {
 		done: (data: any) => void,
 		error: (data: any) => void,
 	) => void;
+	setLectureStatus: (
+		batchId: string,
+		lectureId: string,
+		status: LectureStatus,
+		done: (data: any) => void,
+		error: (data: any) => void,
+	) => void;
 };
 
 const FacultyContext = createContext<FacultyContextType>({
 	coursesList: [],
 	getCoursesList: () => {},
+	setLectureStatus: () => {},
 });
 
 type Props = {
@@ -52,6 +61,20 @@ export function FacultyProvider({ children }: Props) {
 			});
 	};
 
+	const setLectureStatus = (
+		batchId: string,
+		lectureId: string,
+		status: LectureStatus,
+		done: (data: any) => void,
+		error: (data: any) => void,
+	) => {
+		if (user?.role !== 'FACULTY') return;
+		facultyService
+			.setLectureStatus({ batchId, lectureId, status })
+			.then((res) => done(null))
+			.catch((err) => error(null));
+	};
+
 	useEffect(() => {
 		if (user) {
 			getCoursesList();
@@ -62,6 +85,7 @@ export function FacultyProvider({ children }: Props) {
 	const value = {
 		coursesList,
 		getCoursesList,
+		setLectureStatus,
 	};
 
 	return (

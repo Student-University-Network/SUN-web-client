@@ -1,4 +1,6 @@
+/* eslint-disable no-nested-ternary */
 import {
+	ArrowPathIcon,
 	CalendarDaysIcon,
 	ClockIcon,
 	HomeIcon,
@@ -13,20 +15,48 @@ import { useProgram } from 'src/context/ProgramContext';
 import Container from 'src/partials/Container';
 import Navbar from 'src/partials/Navbar';
 import Sidebar from 'src/partials/Sidebar';
-import { ERROR, useAlert } from 'src/Components/Alert';
-import { Timetable, WeekDay, lectureTimeLabel } from './manage';
+import { ERROR, INFO, useAlert } from 'src/Components/Alert';
+import { useFaculty } from 'src/context/FacultyContext';
+import { IconButton } from 'src/Components/Button';
+import { LectureStatus, Timetable, WeekDay, lectureTimeLabel } from './manage';
 
 export default function ViewTimeTable() {
 	const { user } = useAuth();
 	const { showAlert } = useAlert();
 	const { program } = useProgram();
 	const { getTimetable } = useAdmin();
+	const { setLectureStatus } = useFaculty();
 	const [timetableData, setTimetableData] = useState<Timetable>({
 		batchId: '',
 		batchName: '',
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 		days: [...Array(7)].map((_, i) => ({ weekDay: i, lectures: [] })),
 	});
+
+	function fetchTimetable() {
+		getTimetable(
+			program.batchId,
+			(data: Timetable) => setTimetableData(data),
+			() => showAlert(ERROR, 'Failed to fetch timetable', false),
+		);
+	}
+
+	function lectureStatusChange(
+		batchId: string,
+		lectureId: string,
+		newStatus: LectureStatus,
+	) {
+		setLectureStatus(
+			batchId,
+			lectureId,
+			newStatus,
+			() => {
+				showAlert(INFO, `Marked lecture as  ${newStatus}`, true);
+				fetchTimetable();
+			},
+			() => showAlert(ERROR, 'Cannot change lecture status', true),
+		);
+	}
 
 	useEffect(() => {
 		if (user?.userId !== '' && user?.role === 'ADMIN') {
@@ -36,21 +66,13 @@ export default function ViewTimeTable() {
 
 	useEffect(() => {
 		if (user?.role === 'STUDENT' && program.programId !== '') {
-			getTimetable(
-				program.batchId,
-				(data: Timetable) => setTimetableData(data),
-				() => showAlert(ERROR, 'Failed to fetch timetable', false),
-			);
+			fetchTimetable();
 		}
 	}, [program]);
 
 	useEffect(() => {
 		if (user?.role === 'FACULTY') {
-			getTimetable(
-				program.batchId,
-				(data: Timetable) => setTimetableData(data),
-				() => showAlert(ERROR, 'Failed to fetch timetable', false),
-			);
+			fetchTimetable();
 		}
 	}, [user]);
 
@@ -72,9 +94,15 @@ export default function ViewTimeTable() {
 			<Sidebar />
 			<Container>
 				<section className="ml-3 h-full">
-					<span className="inline-flex items-center text-2xl font-medium text-primary-800 dark:text-primary-500">
-						<CalendarDaysIcon className="m-8 h-8 mr-2" />
-						View Timetable
+					<span className="flex justify-between items-center mr-6 text-2xl font-medium text-primary-800 dark:text-primary-500">
+						<div className="flex items-center space-x-2">
+							<CalendarDaysIcon className="m-8 h-8 mr-2" />
+							View Timetable
+						</div>
+						<IconButton
+							leadingIcon={<ArrowPathIcon className="w-5 h-5" />}
+							onClick={() => fetchTimetable()}
+						/>
 					</span>
 					<div className="py-5 grid grid-cols-6 gap-6">
 						<div className="w-full col-span-6 flex flex-col space-y-2">
@@ -99,11 +127,83 @@ export default function ViewTimeTable() {
 											) : (
 												day.lectures.map((lecture) => (
 													<div
-														key={lecture.courseId}
-														className="p-4 min-w-[220px] bg-white dark:bg-slate-800 space-y-1 shadow-md rounded-lg flex flex-col items-start justify-between hover:scale-105 transition"
+														key={lecture.id}
+														className={`p-4 min-w-[220px] bg-white dark:bg-slate-800 space-y-1 shadow-md rounded-lg flex flex-col items-start justify-between hover:scale-105 transition ${
+															lecture.status ===
+															LectureStatus.SCHEDULED
+																? ''
+																: 'bg-gray-200 shadow-none text-gray-800 dark:text-gray-600'
+														}`}
 													>
 														<div className="font-semibold text-lg mb-2 flex w-full justify-between items-center">
 															{lecture.courseName}
+															{lecture.status ===
+															LectureStatus.COMPLETED ? (
+																<span className="text-green-600 text-sm font-normal">
+																	Completed
+																</span>
+															) : lecture.status ===
+																	LectureStatus.CANCELLED &&
+															  user?.role ===
+																	'STUDENT' ? (
+																<span className="text-red-600 text-sm font-normal">
+																	Cancelled
+																</span>
+															) : null}
+															{user?.role ===
+																'FACULTY' &&
+															lecture.status !==
+																LectureStatus.COMPLETED ? (
+																<select
+																	className={`text-sm font-normal border-none p-1 rounded bg-white dark:bg-slate-800 ${
+																		lecture.status ===
+																		LectureStatus.CANCELLED
+																			? 'text-red-600'
+																			: ''
+																	}`}
+																	name="lectureStatus"
+																	value={
+																		lecture.status
+																	}
+																	onChange={(
+																		e,
+																	) =>
+																		lectureStatusChange(
+																			lecture.batchId ||
+																				'',
+																			lecture.id,
+																			e
+																				.target
+																				.value as LectureStatus,
+																		)
+																	}
+																>
+																	<option
+																		value={
+																			LectureStatus.CANCELLED
+																		}
+																	>
+																		{lecture.status ===
+																		LectureStatus.CANCELLED
+																			? 'Cancelled'
+																			: 'Cancel'}
+																	</option>
+																	<option
+																		value={
+																			LectureStatus.COMPLETED
+																		}
+																	>
+																		Complete
+																	</option>
+																	<option
+																		value={
+																			LectureStatus.SCHEDULED
+																		}
+																	>
+																		Scheduled
+																	</option>
+																</select>
+															) : null}
 														</div>
 														<div className="text-sm flex space-x-1 items-center">
 															<UserIcon className="w-4 h-4" />

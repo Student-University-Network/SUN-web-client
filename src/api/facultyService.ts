@@ -13,6 +13,10 @@ class FacultyService {
 	getCoursesList() {
 		return http.get<CoursesListResponse>('/faculty/courses-list');
 	}
+
+	setLectureStatus(payload: any) {
+		return http.post('timetable/lecture-status', payload);
+	}
 }
 
 export default new FacultyService();

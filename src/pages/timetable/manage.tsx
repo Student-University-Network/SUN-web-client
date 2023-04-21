@@ -44,6 +44,12 @@ import Sidebar from 'src/partials/Sidebar';
  *
  */
 
+export enum LectureStatus {
+	SCHEDULED = 'SCHEDULED',
+	COMPLETED = 'COMPLETED',
+	CANCELLED = 'CANCELLED',
+}
+
 export interface Timetable {
 	batchId: string;
 	batchName: string;
@@ -72,6 +78,7 @@ export interface Lecture {
 	};
 	batchId?: string;
 	batchName?: string;
+	status: LectureStatus;
 }
 
 const defaultData: Timetable = {
@@ -95,6 +102,7 @@ const defaultInEditLecture = {
 		hour: 0,
 		minute: 0,
 	},
+	status: LectureStatus.SCHEDULED,
 };
 
 export enum WeekDay {
@@ -244,7 +252,7 @@ export default function ManageTimetable() {
 					...d,
 					lectures: [
 						...d.lectures,
-						{ ...data, id: d.lectures.length.toString() },
+						{ ...data, id: crypto.randomUUID() },
 					],
 				};
 			}
@@ -260,6 +268,18 @@ export default function ManageTimetable() {
 			timetableData,
 			() => showAlert(INFO, 'Timetable saved successfully', true),
 			() => showAlert(ERROR, 'Failed to save timetable', false),
+		);
+	}
+
+	function resetTTStatus() {
+		let resetTimetableData = {...timetableData}
+		resetTimetableData = {...resetTimetableData, days: resetTimetableData.days.map((d, dIndex) => ({...d, lectures: 
+			d.lectures.map((l, lIndex) => ({...l, status: LectureStatus.SCHEDULED}))})
+		)}
+		setTimetable(
+			resetTimetableData,
+			() => showAlert(INFO, 'Timetable resetted successfully', true),
+			() => showAlert(ERROR, 'Failed to reset timetable', false),
 		);
 	}
 
@@ -374,7 +394,11 @@ export default function ManageTimetable() {
 									onClick={() => onSumitTimetable()}
 								/>
 								{batchId !== undefined &&
-								batchId !== '' ? null : (
+								batchId !== '' ? <Button
+								className="btn-outline"
+									label="Reset status"
+									onClick={() => resetTTStatus()}
+								/> : (
 									<Button
 										className="btn-outline"
 										label="Clear"
@@ -398,7 +422,7 @@ export default function ManageTimetable() {
 										<div className="flex space-x-3 p-2 w-full items-center bg-gradient-to-r from-primary-200 via-primary-100 dark:bg-gradient-to-r mix-blend-overlay dark:from-primary-900/30 dark:via-primary-900/10 dark:bg-gray-900 overflow-x-auto">
 											{day.lectures.map((lecture) => (
 												<div
-													key={lecture.courseId}
+													key={lecture.id}
 													className="p-4 min-w-[220px] bg-white dark:bg-slate-800 shadow-md rounded-lg flex flex-col items-start justify-between hover:scale-105 transition"
 												>
 													<div className="font-semibold text-lg mb-2 flex w-full justify-between items-center">
