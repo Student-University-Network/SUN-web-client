@@ -33,6 +33,21 @@ export interface ChangePasswordResponse {
 	[k: string]: any;
 }
 
+export interface GetStudentAttendanceResponse {
+	status: string;
+	data: StudentAttendanceReport;
+}
+
+export interface StudentAttendanceReport {
+	courses: Array<{
+		courseId: string;
+		courseName: string;
+		compulsory: boolean;
+		totalLectures: number;
+		attended: number;
+	}>;
+}
+
 class UserService {
 	userDetails() {
 		return http.get<UserDetailsResponse>('/user/profile');
@@ -44,6 +59,12 @@ class UserService {
 
 	changePassword(payload: ChangePasswordInput) {
 		return http.put<[ChangePasswordResponse]>('/user/password', payload);
+	}
+
+	getStudentAttendanceReport() {
+		return http.get<GetStudentAttendanceResponse>(
+			'attendance/report?courseId=&batchId=',
+		);
 	}
 }
 

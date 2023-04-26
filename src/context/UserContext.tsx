@@ -1,6 +1,9 @@
 import { AxiosError } from 'axios';
 import { createContext, useContext, useEffect, useState } from 'react';
-import userService, { ChangePasswordInput } from 'src/api/userService';
+import userService, {
+	ChangePasswordInput,
+	StudentAttendanceReport,
+} from 'src/api/userService';
 import { useAuth } from './AuthContext';
 
 type UserContextType = {
@@ -22,6 +25,10 @@ type UserContextType = {
 		done: (data: any) => void,
 		error: (data: any) => void,
 	) => void;
+	getStudentAttendanceReport: (
+		done: (data: StudentAttendanceReport) => void,
+		error: (data: any) => void,
+	) => void;
 };
 
 const UserContext = createContext<UserContextType>({
@@ -32,6 +39,7 @@ const UserContext = createContext<UserContextType>({
 	getUserDetails: () => {},
 	updateUserProfile: () => {},
 	changeUserPassword: () => {},
+	getStudentAttendanceReport: () => {},
 });
 
 type Props = {
@@ -113,6 +121,16 @@ export function UserProvider({ children }: Props) {
 			.catch((err) => error(err?.response?.data));
 	};
 
+	const getStudentAttendanceReport = (
+		done: (data: StudentAttendanceReport) => void,
+		error: (data: any) => void,
+	) => {
+		userService
+			.getStudentAttendanceReport()
+			.then((res) => done(res.data.data))
+			.catch((err) => error(null));
+	};
+
 	useEffect(() => {
 		if (user) {
 			getUserDetails();
@@ -128,6 +146,7 @@ export function UserProvider({ children }: Props) {
 		getUserDetails,
 		updateUserProfile,
 		changeUserPassword,
+		getStudentAttendanceReport,
 	};
 
 	return (

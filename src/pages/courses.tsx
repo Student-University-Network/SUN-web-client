@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/interactive-supports-focus */
 /* eslint-disable react/destructuring-assignment */
 import Sidebar from 'src/partials/Sidebar';
 import Navbar from 'src/partials/Navbar';
@@ -8,6 +9,7 @@ import {
 	BookOpenIcon,
 	ClockIcon,
 	LightBulbIcon,
+	UsersIcon,
 } from '@heroicons/react/24/outline';
 import { CourseItem, useFaculty } from 'src/context/FacultyContext';
 import { useProgram } from 'src/context/ProgramContext';
@@ -15,16 +17,28 @@ import { useAuth } from 'src/context/AuthContext';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 
-function CourseCard(data: CourseItem) {
+interface CourseCardProps {
+	data: CourseItem;
+	// eslint-disable-next-line react/require-default-props
+	onCardClick?: (courseId: string, batchId: string) => void;
+}
+
+export function CourseCard({ data, onCardClick = () => {} }: CourseCardProps) {
 	return (
 		<div
 			className="shadow cursor-pointer hover:shadow-lg w-full mx- p-6 rounded my-1"
 			key={data.courseId}
+			role="button"
+			onClick={() => onCardClick(data.courseId, data.batchId)}
 		>
 			<div className="text-xl pb-2 font-semibold">{data.courseName}</div>
 			<div className="mt-2 flex items-center space-x-2">
 				<AcademicCapIcon className="w-5 h-5" />
 				<span>{data.programName}</span>
+			</div>
+			<div className="mt-2 flex items-center space-x-2">
+				<UsersIcon className="w-5 h-5" />
+				<span>{data.batchName}</span>
 			</div>
 			<div className="mt-2 flex items-center space-x-2">
 				<BookOpenIcon className="w-5 h-5" />
@@ -75,26 +89,28 @@ export default function Courses() {
 					<div className="flex flex-col w-full items-center space-y-2">
 						{user?.role === 'FACULTY'
 							? coursesList.map((crs, crsIndex) => (
-									<CourseCard {...crs} />
+									<CourseCard data={crs} />
 							  ))
 							: program.semesters[
 									program.currentSemester
 							  ]?.courses.map((crs, crsIndex) => (
 									<CourseCard
-										{...crs}
-										programId={program.programId}
-										programName={program.programName}
-										semesterId={
-											program.semesters[
-												program.currentSemester
-											]?.semesterId
-										}
-										semesterName={
-											program.semesters[
-												program.currentSemester
-											]?.semesterName
-										}
 										key={crs.courseId}
+										data={{
+											...crs,
+											programId: program.programId,
+											programName: program.programName,
+											semesterId:
+												program.semesters[
+													program.currentSemester
+												]?.semesterId,
+											semesterName:
+												program.semesters[
+													program.currentSemester
+												]?.semesterName,
+											batchId: '',
+											batchName: '',
+										}}
 									/>
 							  ))}
 					</div>

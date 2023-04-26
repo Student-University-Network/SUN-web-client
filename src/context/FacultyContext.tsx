@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import facultyService from 'src/api/facultyService';
+import facultyService, {
+	FacultyAttendanceReport,
+} from 'src/api/facultyService';
 import { LectureStatus } from 'src/pages/timetable/manage';
 import { useAuth } from './AuthContext';
 
@@ -12,6 +14,8 @@ export interface CourseItem {
 	semesterName: string;
 	programId: string;
 	programName: string;
+	batchId: string;
+	batchName: string;
 }
 
 type FacultyContextType = {
@@ -27,12 +31,19 @@ type FacultyContextType = {
 		done: (data: any) => void,
 		error: (data: any) => void,
 	) => void;
+	getFacultyAttendanceReport: (
+		courseId: string,
+		batchId: string,
+		done: (data: FacultyAttendanceReport) => void,
+		error: (data: any) => void,
+	) => void;
 };
 
 const FacultyContext = createContext<FacultyContextType>({
 	coursesList: [],
 	getCoursesList: () => {},
 	setLectureStatus: () => {},
+	getFacultyAttendanceReport: () => {},
 });
 
 type Props = {
@@ -75,6 +86,19 @@ export function FacultyProvider({ children }: Props) {
 			.catch((err) => error(null));
 	};
 
+	const getFacultyAttendanceReport = (
+		courseId: string,
+		batchId: string,
+		done: (data: FacultyAttendanceReport) => void,
+		error: (data: any) => void,
+	) => {
+		if (user?.role !== 'FACULTY') return;
+		facultyService
+			.getFacultyAttendanceReport(courseId, batchId)
+			.then((res) => done(res.data.data))
+			.catch((err) => error(null));
+	};
+
 	useEffect(() => {
 		if (user) {
 			getCoursesList();
@@ -86,6 +110,7 @@ export function FacultyProvider({ children }: Props) {
 		coursesList,
 		getCoursesList,
 		setLectureStatus,
+		getFacultyAttendanceReport,
 	};
 
 	return (

@@ -8,6 +8,7 @@ import {
 	UserGroupIcon,
 	BellAlertIcon,
 	CalendarDaysIcon,
+	TableCellsIcon,
 } from '@heroicons/react/24/outline';
 import { useAuth } from 'src/context/AuthContext';
 
@@ -119,6 +120,19 @@ export default function Sidebar() {
 							label="TimeTable"
 						/>
 					)}
+					{user?.role !== 'ADMIN' ? (
+						<NavItem
+							routerPath={router.pathname}
+							hrefPath="/attendance"
+							icon={
+								<TableCellsIcon
+									className="w-5 h-5"
+									strokeWidth={2}
+								/>
+							}
+							label="Attendance"
+						/>
+					) : null}
 					<NavItem
 						routerPath={router.pathname}
 						hrefPath="/notifications"
