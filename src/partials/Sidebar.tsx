@@ -135,14 +135,14 @@ export default function Sidebar() {
 					) : null}
 					<NavItem
 						routerPath={router.pathname}
-						hrefPath="/notifications"
+						hrefPath="/announcements"
 						icon={
 							<BellAlertIcon
 								className="w-5 h-5"
 								strokeWidth={2}
 							/>
 						}
-						label="Notifications"
+						label="Announcements"
 					/>
 				</ul>
 				<ul className="hidden lg:block flex-col py-4 space-y-1 ">

@@ -132,7 +132,7 @@ function StudentView() {
 			(data: StudentAttendanceReport) => setStudentReport(data),
 			() => showAlert(ERROR, 'Failed to fetch attendance report', true),
 		);
-	});
+	}, []);
 	return (
 		<div className="flex flex-col space-y-2">
 			{studentReport.courses.map((r) => (

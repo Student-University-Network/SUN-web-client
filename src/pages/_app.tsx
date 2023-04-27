@@ -8,6 +8,7 @@ import { Alert } from 'src/Components/Alert';
 import { ProgramProvider } from 'src/context/ProgramContext';
 import { AdminProvider } from 'src/context/AdminContext';
 import { FacultyProvider } from 'src/context/FacultyContext';
+import { AnnouncementProvider } from 'src/context/AnnouncementContext';
 import { GlobalContextProvider } from '../context/store';
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -18,15 +19,17 @@ export default function App({ Component, pageProps }: AppProps) {
 					<ProgramProvider>
 						<AdminProvider>
 							<FacultyProvider>
-								<Alert>
-									<LoadingScreen />
-									<ThemeProvider
-										attribute="class"
-										enableSystem={false}
-									>
-										<Component {...pageProps} />
-									</ThemeProvider>
-								</Alert>
+								<AnnouncementProvider>
+									<Alert>
+										<LoadingScreen />
+										<ThemeProvider
+											attribute="class"
+											enableSystem={false}
+										>
+											<Component {...pageProps} />
+										</ThemeProvider>
+									</Alert>
+								</AnnouncementProvider>
 							</FacultyProvider>
 						</AdminProvider>
 					</ProgramProvider>
